@@ -49,10 +49,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupTabIcons() {
-        tabLayout.getTabAt(0).setIcon(R.mipmap.ic_launcher);
-        tabLayout.getTabAt(1).setIcon(R.mipmap.ic_launcher);
-        tabLayout.getTabAt(2).setIcon(R.mipmap.ic_launcher);
-        tabLayout.getTabAt(3).setIcon(R.mipmap.ic_launcher);
+        tabLayout.getTabAt(0).setIcon(R.drawable.friends_icon);
+        tabLayout.getTabAt(1).setIcon(R.drawable.conversation_icon);
+        tabLayout.getTabAt(2).setIcon(R.drawable.soundboard_icon);
+        tabLayout.getTabAt(3).setIcon(R.drawable.profile_icon);
     }
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
+            return "";
         }
     }
 }

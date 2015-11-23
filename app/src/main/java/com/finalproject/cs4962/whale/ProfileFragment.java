@@ -27,17 +27,20 @@ public class ProfileFragment extends Fragment
         mainLayout.setOrientation(LinearLayout.VERTICAL);
 
         //creating the profile pic
-        LinearLayout profileInfo = new LinearLayout(getContext());
-        profileInfo.setOrientation(LinearLayout.HORIZONTAL);
+        //eventually will pull this from memory
+        LinearLayout profileBar = new LinearLayout(getContext());
+        profileBar.setOrientation(LinearLayout.HORIZONTAL);
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.whale);
         RoundImage roundImage = new RoundImage(bm);
         ImageView profilePic = new ImageView(getContext());
         profilePic.setImageDrawable(roundImage);
-        profileInfo.addView(profilePic,new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
+        profileBar.addView(profilePic, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
+
+        //adding the profile information
+        LinearLayout profileInfo = new LinearLayout(getContext());
 
 
-
-        return profileInfo ;
+        return profileBar ;
 
     }
 }
