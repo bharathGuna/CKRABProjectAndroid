@@ -34,7 +34,7 @@ public class RoundImage extends Drawable {
 
         canvas.drawOval(mRectF, mPaint);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setColor(R.color.colorAccent);
+
     }
     @Override
     protected void onBoundsChange(Rect bounds) {

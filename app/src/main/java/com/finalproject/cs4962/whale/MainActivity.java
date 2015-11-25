@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,16 +20,15 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private static final String FRIEND_FRAGMENT_TAG = "FRIEND_FRAGMENT_TAG";
+    private static final String CONVERSATION_FRAGMENT_TAG = "CONVERSATION_FRAGMENT_TAG";
+    private static final String SOUNDBOARD_FRAGMENT_TAG = "SOUNDBOARD_FRAGMENT_TAG";
+    private static final String PROFILE_FRAGMENT_TAG = "PROFILE_FRAGMENT_TAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-    //    toolbar = (Toolbar) findViewById(R.id.toolbar);
-    //    setSupportActionBar(toolbar);
-
-    //    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -41,10 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FriendFragment(), "ONE");
-        adapter.addFragment(new ConversationFragment(), "TWO");
-        adapter.addFragment(new SoundBoardFragment(), "THREE");
-        adapter.addFragment(new ProfileFragment(), "FOUR");
+        adapter.addFragment(FriendFragment.newInstance());
+        adapter.addFragment(ConversationFragment.newInstance());
+        adapter.addFragment(SoundBoardFragment.newInstance());
+        adapter.addFragment(ProfileFragment.newInstance());
         viewPager.setAdapter(adapter);
     }
 
@@ -54,9 +54,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(2).setIcon(R.drawable.soundboard_icon);
         tabLayout.getTabAt(3).setIcon(R.drawable.profile_icon);
     }
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -72,14 +71,9 @@ public class MainActivity extends AppCompatActivity {
             return mFragmentList.size();
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        public void addFragment(Fragment fragment) {
             mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return "";
-        }
     }
 }

@@ -18,6 +18,11 @@ import android.widget.LinearLayout;
 public class ProfileFragment extends Fragment
 {
 
+    public static ProfileFragment newInstance()
+    {
+        ProfileFragment fragment = new ProfileFragment();
+        return  fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -31,9 +36,11 @@ public class ProfileFragment extends Fragment
         LinearLayout profileBar = new LinearLayout(getContext());
         profileBar.setOrientation(LinearLayout.HORIZONTAL);
         Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.whale);
-        RoundImage roundImage = new RoundImage(bm);
-        ImageView profilePic = new ImageView(getContext());
-        profilePic.setImageDrawable(roundImage);
+        //RoundImage roundImage = new RoundImage(bm);
+        //ImageView profilePic = new ImageView(getContext());
+        //profilePic.setImageDrawable(roundImage);
+        CircularImageView profilePic = new CircularImageView(getContext());
+        profilePic.setImageResource(R.drawable.whale);
         profileBar.addView(profilePic, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
 
         //adding the profile information
@@ -43,4 +50,6 @@ public class ProfileFragment extends Fragment
         return profileBar ;
 
     }
+
+
 }
