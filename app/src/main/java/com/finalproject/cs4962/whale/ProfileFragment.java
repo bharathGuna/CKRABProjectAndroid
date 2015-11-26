@@ -40,8 +40,8 @@ public class ProfileFragment extends Fragment
         //ImageView profilePic = new ImageView(getContext());
         //profilePic.setImageDrawable(roundImage);
         CircularImageView profilePic = new CircularImageView(getContext());
-        profilePic.setImageResource(R.drawable.whale);
-        profileBar.addView(profilePic, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
+        profilePic.setImageResource(R.drawable.whale2);
+        profileBar.addView(profilePic, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         //adding the profile information
         LinearLayout profileInfo = new LinearLayout(getContext());
