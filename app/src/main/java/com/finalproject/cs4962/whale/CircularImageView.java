@@ -2,7 +2,6 @@ package com.finalproject.cs4962.whale;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -35,6 +34,7 @@ public class CircularImageView extends ImageView
 	// Objects used for the actual drawing
 	private Bitmap image;
 	private Paint paintBorder;
+	private Paint textPaint;
 	private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;
 	private static final int COLORDRAWABLE_DIMENSION = 2;
 
@@ -44,6 +44,7 @@ public class CircularImageView extends ImageView
         super(context);
 		myProfile = _mode;
         init(context);
+		this.setBackgroundColor(Color.GREEN);
 	}
 
     public CircularImageView(Context context)
@@ -62,7 +63,12 @@ public class CircularImageView extends ImageView
 		// Initialize paint objects
 		paintBorder = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintBorder.setStyle(Paint.Style.STROKE);
-		
+
+		if(!myProfile)
+		{
+			textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			paintBorder.setStyle(Paint.Style.STROKE);
+		}
 
 		
 		// Check if border and/or border is enabled
@@ -112,6 +118,27 @@ public class CircularImageView extends ImageView
         if(hasBorder)
         canvas.drawOval(picture,paintBorder);
 
+		if(!myProfile && !name.isEmpty() )
+		{
+			drawCenter(canvas,name,heightPadding);
+		}
+
+	}
+
+	private void drawCenter(Canvas canvas, String text, int padding) {
+		int cHeight = canvas.getClipBounds().height();
+		int cWidth = canvas.getClipBounds().width();
+		Rect r = new Rect();
+		paintBorder.setTextAlign(Paint.Align.LEFT);
+		paintBorder.setTextSize(padding);
+		paintBorder.getTextBounds(text, 0, text.length(), r);
+
+		float x = cWidth / 2f - r.width() / 2f - r.left;
+		float y = cHeight - padding/5;
+		Paint temp = new Paint();
+		temp.setColor(Color.RED);
+		canvas.drawRect(r,temp);
+		canvas.drawText(text, x, y, paintBorder);
 	}
 
 	//crops the image into a circle shape
@@ -225,10 +252,21 @@ public class CircularImageView extends ImageView
 	public void setBorderColor(int _borderColor)
 	{
 		if (paintBorder != null)
+		{
 			paintBorder.setColor(_borderColor);
-		invalidate();
+			invalidate();
+		}
 	}
 
+
+	public void setTextPaintColor(int _color)
+	{
+		if(textPaint != null)
+		{
+			textPaint.setColor(_color);
+			invalidate();
+		}
+	}
 
 	@Override
 	public void invalidate() {
