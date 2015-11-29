@@ -1,14 +1,11 @@
 package com.finalproject.cs4962.whale;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 
@@ -17,6 +14,10 @@ import android.widget.LinearLayout;
  */
 public class ProfileFragment extends Fragment
 {
+
+    //components of the fragment
+    LinearLayout mainLayout,profileBar,profileInfo;
+    CircularImageView profilePic;
 
     public static ProfileFragment newInstance()
     {
@@ -28,28 +29,44 @@ public class ProfileFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
 
-        LinearLayout mainLayout = new LinearLayout(getContext());
+        mainLayout = new LinearLayout(getContext());
         mainLayout.setOrientation(LinearLayout.VERTICAL);
 
         //creating the profile pic
         //eventually will pull this from memory
-        LinearLayout profileBar = new LinearLayout(getContext());
+        profileBar = new LinearLayout(getContext());
         profileBar.setOrientation(LinearLayout.HORIZONTAL);
-        Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.whale);
-        //RoundImage roundImage = new RoundImage(bm);
-        //ImageView profilePic = new ImageView(getContext());
-        //profilePic.setImageDrawable(roundImage);
-        CircularImageView profilePic = new CircularImageView(getContext());
+        //creating the profile pic
+        profilePic = new CircularImageView(getContext());
         profilePic.setImageResource(R.drawable.whale2);
         profileBar.addView(profilePic, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
         //adding the profile information
-        LinearLayout profileInfo = new LinearLayout(getContext());
-
-
+        profileInfo = new LinearLayout(getContext());
+        profileInfo.setOrientation(LinearLayout.VERTICAL);
+        String name = "Rajul The Whale";
+        String totalMessages = "12321";
+        String friendFrom = "05/05/05";
+        setUpProfileInfo(profileInfo, name, totalMessages, friendFrom);
+        profileBar.addView(profileInfo,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,3));
         return profileBar ;
 
     }
 
+    //really bad work around to make everything line up
+    private LinearLayout setUpProfileInfo(LinearLayout layout, String _name, String _totalMessages, String _friendFrom)
+    {
+
+        int maxSize = (int)(getResources().getDisplayMetrics().density * 140f);
+        int height = (int)(maxSize * .6f);
+        CustomTextView name = new CustomTextView(getContext(),_name,true);
+        layout.addView(name, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
+        CustomTextView totalMessages = new CustomTextView(getContext(),"Messages: "+_totalMessages, false);
+        height = (int)(maxSize * .2f);
+        layout.addView(totalMessages, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
+        CustomTextView friendFrom = new CustomTextView(getContext(), "Friended: " + _friendFrom, false);
+        layout.addView(friendFrom, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
+        return layout;
+
+    }
 
 }

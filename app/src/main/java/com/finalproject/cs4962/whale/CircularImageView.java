@@ -44,7 +44,6 @@ public class CircularImageView extends ImageView
         super(context);
 		myProfile = _mode;
         init(context);
-		this.setBackgroundColor(Color.GREEN);
 	}
 
     public CircularImageView(Context context)
@@ -135,9 +134,6 @@ public class CircularImageView extends ImageView
 
 		float x = cWidth / 2f - r.width() / 2f - r.left;
 		float y = cHeight - padding/5;
-		Paint temp = new Paint();
-		temp.setColor(Color.RED);
-		canvas.drawRect(r,temp);
 		canvas.drawText(text, x, y, paintBorder);
 	}
 
@@ -200,7 +196,7 @@ public class CircularImageView extends ImageView
 	public void setImageResource( int resId) {
 		super.setImageResource(resId);
 		image = getBitmapFromDrawable(getDrawable());
-		image = getCircleCrop(image);
+		invalidate();
 
 	}
 
@@ -268,6 +264,10 @@ public class CircularImageView extends ImageView
 		}
 	}
 
+	public int getCanvasSize()
+	{
+		return canvasSize;
+	}
 	@Override
 	public void invalidate() {
 		super.invalidate();
@@ -330,7 +330,6 @@ public class CircularImageView extends ImageView
 
         if(measureHeight < widthSize)
             measureHeight |= MEASURED_STATE_TOO_SMALL;
-
 
         setMeasuredDimension(measureWidth, measureHeight);
     }
