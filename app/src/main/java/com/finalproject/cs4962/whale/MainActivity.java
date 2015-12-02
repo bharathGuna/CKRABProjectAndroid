@@ -20,10 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private static final String FRIEND_FRAGMENT_TAG = "FRIEND_FRAGMENT_TAG";
-    private static final String CONVERSATION_FRAGMENT_TAG = "CONVERSATION_FRAGMENT_TAG";
-    private static final String SOUNDBOARD_FRAGMENT_TAG = "SOUNDBOARD_FRAGMENT_TAG";
-    private static final String PROFILE_FRAGMENT_TAG = "PROFILE_FRAGMENT_TAG";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
-        Button b = new Button(this);
     }
 
     private void setupViewPager(ViewPager viewPager) {

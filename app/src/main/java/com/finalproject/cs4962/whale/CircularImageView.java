@@ -12,6 +12,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
 import android.widget.ImageView;
 
 /**
@@ -39,11 +40,12 @@ public class CircularImageView extends ImageView
 	private static final int COLORDRAWABLE_DIMENSION = 2;
 
 
-	public CircularImageView(Context context,boolean _mode)
+	public CircularImageView(Context context, boolean _mode)
 	{
         super(context);
 		myProfile = _mode;
         init(context);
+
 	}
 
     public CircularImageView(Context context)
@@ -51,6 +53,15 @@ public class CircularImageView extends ImageView
         this(context, true);
 
     }
+
+	public CircularImageView(Context context, AttributeSet attrs)
+	{
+		super(context, attrs);
+		myProfile = true;
+		init(context);
+		setImageResource(R.drawable.whale2);
+	}
+
 
 	/**
 	 * Initializes paint objects and sets desired attributes.

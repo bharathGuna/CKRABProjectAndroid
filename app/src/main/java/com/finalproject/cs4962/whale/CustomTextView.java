@@ -5,9 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
-import android.text.Layout;
-import android.text.StaticLayout;
 import android.text.TextPaint;
+import android.util.AttributeSet;
 import android.view.Gravity;
 import android.widget.TextView;
 
@@ -18,10 +17,11 @@ public class CustomTextView extends TextView
 {
 
     private Paint paint;
-    private TextPaint textPaint;
     boolean name;
     private int lineCount = 1;
     private Handler handler = new Handler();
+
+
 
     public CustomTextView(Context context, String text, boolean _name)
     {
@@ -47,6 +47,11 @@ public class CustomTextView extends TextView
         setGravity(Gravity.CENTER);
     }
 
+    public CustomTextView(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+    }
+
 
     private void setUnderlineColor(int color)
     {
@@ -70,32 +75,32 @@ public class CustomTextView extends TextView
         int lineSize = getLineHeight();
         int lines = getLineCount();
         float textSize = getTextSize();
-        // Rect rect = new Rect();
-        //  getLineBounds(lines -1, rect);
         int totalHeight = lineSize * lines;
-        int size = pixelsToSp(textSize);
-        TextPaint textPaint = new TextPaint();
-        StaticLayout layout;
 
+        int size = pixelsToSp(textSize);
+
+        int totalWidth = (int)getPaint().measureText(text);
         //currentSize is too big
-        if (totalHeight > height)
+        if (totalHeight > height && totalWidth > width)
         {
-            while (totalHeight > height)
+            while (totalHeight > height && totalWidth > width)
             {
                 size--;
                 setTextSize(size);
                 totalHeight = getLineHeight() * lineCount;
+                totalWidth = (int)getPaint().measureText(text);
+
             }
         }
         //textSize is too small
         else
         {
-            while (totalHeight < height)
+            while (totalHeight < height && totalWidth < width)
             {
                 size++;
                 setTextSize(size);
                 totalHeight = getLineHeight() * lineCount;
-                textPaint.setTextSize(size);
+                totalWidth = (int)getPaint().measureText(text);
             }
 
         }
