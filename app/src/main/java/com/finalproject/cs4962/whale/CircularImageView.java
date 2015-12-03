@@ -40,27 +40,14 @@ public class CircularImageView extends ImageView
 	private static final int COLORDRAWABLE_DIMENSION = 2;
 
 
-	public CircularImageView(Context context, boolean _mode)
+	public CircularImageView(Context context)
 	{
         super(context);
-		myProfile = _mode;
         init(context);
 
 	}
 
-    public CircularImageView(Context context)
-    {
-        this(context, true);
 
-    }
-
-	public CircularImageView(Context context, AttributeSet attrs)
-	{
-		super(context, attrs);
-		myProfile = true;
-		init(context);
-		setImageResource(R.drawable.whale2);
-	}
 
 
 	/**
@@ -73,12 +60,6 @@ public class CircularImageView extends ImageView
 		// Initialize paint objects
 		paintBorder = new Paint(Paint.ANTI_ALIAS_FLAG);
         paintBorder.setStyle(Paint.Style.STROKE);
-
-		if(!myProfile)
-		{
-			textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-			paintBorder.setStyle(Paint.Style.STROKE);
-		}
 
 		
 		// Check if border and/or border is enabled
@@ -97,61 +78,58 @@ public class CircularImageView extends ImageView
 	@Override
 	public void onDraw(Canvas canvas)
 	{
-		// Don't draw anything without an image
-		if(image == null)
-			return;
-		
-		// Nothing to draw (Empty bounds)
-		if(image.getHeight() == 0 || image.getWidth() == 0)
-			return;
 
 		canvasSize = canvas.getWidth();
+
 		if(canvas.getHeight() < canvasSize)
 			canvasSize = canvas.getHeight();
 
         int padding = (int)(canvasSize * .125f);
         canvasSize -= 2 * padding;
-        int heightPadding = (getHeight() - canvasSize)/2;
+        int heightPadding = padding;
 
         RectF picture = new RectF();
-        picture.left = padding - getPaddingLeft();
-        picture.top = heightPadding + getPaddingTop();
-        picture.right = padding + canvasSize + getPaddingRight();
-        picture.bottom = getHeight() - heightPadding - getPaddingBottom();
+        picture.left = padding;
+        picture.top = heightPadding;
+        picture.right = padding + canvasSize;
+        picture.bottom = getHeight() - heightPadding;
 
 
-        prepImageForDrawing();
+		if(image != null)
+		{
+			prepImageForDrawing();
+			// Apply shader to paint
+			canvas.drawBitmap(image, picture.left, picture.top, paintBorder);
+		}
 
-        // Apply shader to paint
-        canvas.drawBitmap(image, picture.left, picture.top, paintBorder);
-
+		if(name != null && image == null)
+		{
+			String initial = ""+name.charAt(0);
+			drawCenter(canvas,initial);
+		}
         if(hasBorder)
         canvas.drawOval(picture,paintBorder);
 
-		if(!myProfile && !name.isEmpty() )
-		{
-			drawCenter(canvas,name,heightPadding);
-		}
-
 	}
 
-	private void drawCenter(Canvas canvas, String text, int padding) {
+	private void drawCenter(Canvas canvas, String text) {
 		int cHeight = canvas.getClipBounds().height();
 		int cWidth = canvas.getClipBounds().width();
 		Rect r = new Rect();
-		paintBorder.setTextAlign(Paint.Align.LEFT);
-		paintBorder.setTextSize(padding);
-		paintBorder.getTextBounds(text, 0, text.length(), r);
+		textPaint.setTextAlign(Paint.Align.LEFT);
+		textPaint.setTextSize(canvasSize * .8f);
+		textPaint.getTextBounds(text, 0, text.length(), r);
 
+		textPaint.setColor(Color.WHITE);
 		float x = cWidth / 2f - r.width() / 2f - r.left;
-		float y = cHeight - padding/5;
-		canvas.drawText(text, x, y, paintBorder);
+		float y = cHeight / 2f + r.height() / 2f - r.bottom;
+		canvas.drawText(text, x, y, textPaint);
 	}
 
 	//crops the image into a circle shape
     public static Bitmap getCircleCrop(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(),BITMAP_CONFIG);
+				bitmap.getHeight(), BITMAP_CONFIG);
         Canvas canvas = new Canvas(output);
 
         final Paint paint = new Paint();
@@ -160,7 +138,7 @@ public class CircularImageView extends ImageView
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2,
-                bitmap.getWidth() / 2, paint);
+				bitmap.getWidth() / 2, paint);
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
         return output;
@@ -171,8 +149,12 @@ public class CircularImageView extends ImageView
 	 */
 	public void prepImageForDrawing()
 	{
-		image = Bitmap.createScaledBitmap(image, canvasSize, canvasSize, false);
-		image = getCircleCrop(image);
+		if(image != null)
+		{
+			image = Bitmap.createScaledBitmap(image, canvasSize, canvasSize, false);
+			image = getCircleCrop(image);
+		}
+
 	}
 
 
@@ -194,6 +176,12 @@ public class CircularImageView extends ImageView
 	public void setName(String _name)
 	{
 		name = _name;
+		if(textPaint == null)
+		{
+			textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			textPaint.setStyle(Paint.Style.FILL);
+		}
+		invalidate();
 	}
 	public void setShadow(Boolean _hasShadow)
 	{
@@ -290,6 +278,7 @@ public class CircularImageView extends ImageView
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
+		super.onMeasure(widthMeasureSpec,heightMeasureSpec);
         int widthMod = MeasureSpec.getMode(widthMeasureSpec);
         int heightMod = MeasureSpec.getMode(heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
@@ -302,7 +291,7 @@ public class CircularImageView extends ImageView
         if(widthMod == MeasureSpec.AT_MOST && heightMod == MeasureSpec.AT_MOST)
         {
             measureWidth = Math.min(Math.min(width,height),widthSize);
-            measureHeight = measureWidth;
+			measureHeight = measureWidth;
         }
 
         if(widthMod == MeasureSpec.AT_MOST && heightMod == MeasureSpec.EXACTLY)
@@ -332,6 +321,12 @@ public class CircularImageView extends ImageView
                 measureHeight = Math.min(width, height);
             }
         }
+
+		if(widthMod == MeasureSpec.EXACTLY && heightMod == MeasureSpec.EXACTLY)
+		{
+			measureWidth = Math.min(Math.min(width,height),widthSize);
+			measureHeight = measureWidth;
+		}
 
 
         if(measureWidth < widthSize )

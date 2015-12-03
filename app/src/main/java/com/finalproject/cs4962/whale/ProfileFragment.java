@@ -51,7 +51,8 @@ public class ProfileFragment extends Fragment
         profileBar.setOrientation(LinearLayout.HORIZONTAL);
         //creating the profile pic
         profilePic = new CircularImageView(getContext());
-        profilePic.setImageResource(R.drawable.whale2);
+        profilePic.setName("Bharath");
+        //profilePic.setImageResource(R.drawable.whale2);
         profileBar.addView(profilePic, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         //adding the profile information
         profileInfo = new LinearLayout(getContext());
