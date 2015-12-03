@@ -818,6 +818,7 @@ public class Networking
 
     private static short toShort(byte byte1, byte byte2)
     {
+        int b1 = byte1 < 0 ? byte1 + 256 : byte1;
         return (short) ((byte2 << 8) + byte1);
     }
 }
