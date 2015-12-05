@@ -157,7 +157,7 @@ public class ProfileFragment extends Fragment
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFragment(ConversationFragment.newInstance(), "About Me");
+        adapter.addFragment(DescriptionFragment.newInstance(), "About Me");
         adapter.addFragment(ProfileFriendFragment.newInstance(), "Friends");
         viewPager.setAdapter(adapter);
     }

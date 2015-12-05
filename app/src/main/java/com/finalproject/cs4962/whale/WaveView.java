@@ -19,7 +19,7 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
     private RectF playRect = new RectF();
     private RectF waveRect = new RectF();
     private ValueAnimator animator = new ValueAnimator();
-    private int length = 10;
+    private int length = 5;
     private float percentage = 0.5f;
 
     public WaveView(Context context)
@@ -46,6 +46,7 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
+
         PointF touchPoint = new PointF(event.getX(), event.getY());
         if (touchPoint.x > playRect.left && touchPoint.x < playRect.right &&
                 touchPoint.y > playRect.top && touchPoint.y < playRect.bottom)
@@ -55,10 +56,11 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
         }
         else
         {
-//            float scaledX = touchPoint.x - playRect.width();
-//            percentage = scaledX / (waveRect.width());
-//            animator.setCurrentFraction(percentage); // requires api 22
-//            invalidate();
+            float scaledX = touchPoint.x - playRect.width();
+            percentage = scaledX / (waveRect.width());
+            //animator.setCurrentFraction(percentage); // requires api 22
+            animator.setIntValues((int)(percentage * 100), 100);
+            invalidate();
         }
 
         if (animator.isRunning())
@@ -196,11 +198,15 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
             }
             else
             {
+
                 wavePath.lineTo(x, y);
                 if (i <= totalPlayPathPoints)
                     playPath.lineTo(x, y);
             }
         }
+
+//        float scaledWidth = waveRect.width();
+//        float stepX =
 
         canvas.drawPath(playPath, playPaint);
         canvas.drawPath(wavePath, wavePaint);

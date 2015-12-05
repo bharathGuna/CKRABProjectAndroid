@@ -333,13 +333,13 @@ public class CircularImageView extends ImageView
 		}
 
 
-        if(measureWidth < widthSize )
-        {
-            measureWidth |= MEASURED_STATE_TOO_SMALL;
-        }
-
-        if(measureHeight < widthSize)
-            measureHeight |= MEASURED_STATE_TOO_SMALL;
+//        if(measureWidth < widthSize )
+//        {
+//            measureWidth |= MEASURED_STATE_TOO_SMALL;
+//        }
+//
+//        if(measureHeight < widthSize)
+//            measureHeight |= MEASURED_STATE_TOO_SMALL;
 
         setMeasuredDimension(measureWidth, measureHeight);
     }
