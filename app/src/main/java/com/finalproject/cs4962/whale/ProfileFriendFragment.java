@@ -1,6 +1,6 @@
 package com.finalproject.cs4962.whale;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,10 +19,10 @@ import android.widget.TextView;
 public class ProfileFriendFragment extends Fragment implements ListAdapter
 {
     private GridView gridView;
-    public static FriendFragment newInstance()
+    public static ProfileFriendFragment newInstance()
 
     {
-        FriendFragment fragment = new FriendFragment();
+        ProfileFriendFragment fragment = new ProfileFriendFragment();
         return fragment;
     }
 
@@ -104,14 +104,14 @@ public class ProfileFriendFragment extends Fragment implements ListAdapter
     @Override
     public View getView(int i, View view, ViewGroup viewGroup)
     {
-        LinearLayout layout = new LinearLayout(getContext());
+        LinearLayout layout = new LinearLayout(getActivity());
         layout.setOrientation(LinearLayout.VERTICAL);
         CircularImageView imageView;
         TextView name;
         int size = (int) (getResources().getDisplayMetrics().widthPixels/gridView.getNumColumns() );
-        imageView = new CircularImageView(getContext());
+        imageView = new CircularImageView(getActivity());
         imageView.setImageResource(R.drawable.whale);
-        name = new TextView(getContext());
+        name = new TextView(getActivity());
         name.setText("Bharath Gunasekaran");
         name.setLines(3);
         name.setTextSize(getResources().getDisplayMetrics().density * 5f);

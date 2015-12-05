@@ -19,7 +19,6 @@ public class FriendFragment extends Fragment implements ListAdapter
 {
     private  GridView gridView;
     public static FriendFragment newInstance()
-
     {
         FriendFragment fragment = new FriendFragment();
         return fragment;
