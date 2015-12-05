@@ -33,24 +33,15 @@ public class ConversationFragment extends Fragment implements ListAdapter
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //return inflater.inflate(R.layout.fragment_convo_list, container, false);
-        LinearLayout rootLayout = new LinearLayout(getActivity());
-        CircularImageView profile = new CircularImageView(getActivity());
-        profile.setImageResource(R.drawable.whale);
-        WaveView msg = new WaveView(getActivity());
-        rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
-        rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
-        int padding = (int)(8.0f * getResources().getDisplayMetrics().density);
-        rootLayout.setPadding(0, padding, 0, padding);
-        return rootLayout;
+        return inflater.inflate(R.layout.fragment_convo_list, container, false);
     }
 
     @Override
     public void onStart()
     {
         super.onStart();
-        //ListView listView = (ListView)getActivity().findViewById(R.id.convo_list_view);
-        //listView.setAdapter(this);
+        ListView listView = (ListView)getActivity().findViewById(R.id.convo_list_view);
+        listView.setAdapter(this);
     }
 
     @Override
@@ -62,7 +53,7 @@ public class ConversationFragment extends Fragment implements ListAdapter
     @Override
     public int getCount()
     {
-        return 1;
+        return 5;
     }
 
     @Override

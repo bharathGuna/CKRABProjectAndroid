@@ -282,57 +282,57 @@ public class CircularImageView extends ImageView
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
-		super.onMeasure(widthMeasureSpec,heightMeasureSpec);
-        int widthMod = MeasureSpec.getMode(widthMeasureSpec);
-        int heightMod = MeasureSpec.getMode(heightMeasureSpec);
-        int width = MeasureSpec.getSize(widthMeasureSpec);
-        int height = MeasureSpec.getSize(heightMeasureSpec);
-        int measureWidth = width  ;
-        int measureHeight = height ;
-        int widthSize = (int) (getResources().getDisplayMetrics().density * 140);
-
-
-        if(widthMod == MeasureSpec.AT_MOST && heightMod == MeasureSpec.AT_MOST)
-        {
-            measureWidth = Math.min(Math.min(width,height),widthSize);
-			measureHeight = measureWidth;
-        }
-
-        if(widthMod == MeasureSpec.AT_MOST && heightMod == MeasureSpec.EXACTLY)
-        {
-            if(height > widthSize)
-            {
-                measureHeight = height;
-                measureWidth = measureHeight;
-            }
-            else
-            {
-                measureWidth = Math.min(width, height);
-                measureHeight = height;
-
-            }
-        }
-        if(widthMod == MeasureSpec.EXACTLY && heightMod == MeasureSpec.AT_MOST)
-        {
-            if(width > widthSize)
-            {
-                measureHeight = width;
-                measureWidth = width;
-            }
-            else
-            {
-                measureWidth = width;
-                measureHeight = Math.min(width, height);
-            }
-        }
-
-		if(widthMod == MeasureSpec.EXACTLY && heightMod == MeasureSpec.EXACTLY)
-		{
-			measureWidth = Math.min(Math.min(width,height),widthSize);
-			measureHeight = measureWidth;
-		}
-
-
+//		super.onMeasure(widthMeasureSpec,heightMeasureSpec);
+//        int widthMod = MeasureSpec.getMode(widthMeasureSpec);
+//        int heightMod = MeasureSpec.getMode(heightMeasureSpec);
+//        int width = MeasureSpec.getSize(widthMeasureSpec);
+//        int height = MeasureSpec.getSize(heightMeasureSpec);
+//        int measureWidth = width  ;
+//        int measureHeight = height ;
+//        int widthSize = (int) (getResources().getDisplayMetrics().density * 140);
+//
+//
+//        if(widthMod == MeasureSpec.AT_MOST && heightMod == MeasureSpec.AT_MOST)
+//        {
+//            measureWidth = Math.min(Math.min(width,height),widthSize);
+//			measureHeight = measureWidth;
+//        }
+//
+//        if(widthMod == MeasureSpec.AT_MOST && heightMod == MeasureSpec.EXACTLY)
+//        {
+//            if(height > widthSize)
+//            {
+//                measureHeight = height;
+//                measureWidth = measureHeight;
+//            }
+//            else
+//            {
+//                measureWidth = Math.min(width, height);
+//                measureHeight = height;
+//
+//            }
+//        }
+//        if(widthMod == MeasureSpec.EXACTLY && heightMod == MeasureSpec.AT_MOST)
+//        {
+//            if(width > widthSize)
+//            {
+//                measureHeight = width;
+//                measureWidth = width;
+//            }
+//            else
+//            {
+//                measureWidth = width;
+//                measureHeight = Math.min(width, height);
+//            }
+//        }
+//
+//		if(widthMod == MeasureSpec.EXACTLY && heightMod == MeasureSpec.EXACTLY)
+//		{
+//			measureWidth = Math.min(Math.min(width,height),widthSize);
+//			measureHeight = measureWidth;
+//		}
+//
+//
 //        if(measureWidth < widthSize )
 //        {
 //            measureWidth |= MEASURED_STATE_TOO_SMALL;
@@ -340,8 +340,41 @@ public class CircularImageView extends ImageView
 //
 //        if(measureHeight < widthSize)
 //            measureHeight |= MEASURED_STATE_TOO_SMALL;
+//
+//        setMeasuredDimension(measureWidth, measureHeight);
+		// Measure the cell, keep it square
+		// Start from the smallest size and build up
 
-        setMeasuredDimension(measureWidth, measureHeight);
+		int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+		int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+		int widthSpec = MeasureSpec.getSize(widthMeasureSpec);
+		int heightSpec = MeasureSpec.getSize(heightMeasureSpec);
+
+		int width = getSuggestedMinimumWidth();
+		int height = getSuggestedMinimumHeight();
+
+		if (widthMode == MeasureSpec.AT_MOST)
+			width = widthSpec;
+		if (heightMode == MeasureSpec.AT_MOST)
+			height = heightSpec;
+
+		if (widthMode == MeasureSpec.EXACTLY)
+		{
+			width = widthSpec;
+			height = width;
+		}
+		if (heightMode == MeasureSpec.EXACTLY)
+		{
+			height = heightSpec;
+			width = height;
+		}
+
+		if (width > height && widthMode != MeasureSpec.EXACTLY)
+			width = height;
+		if (height > width && heightMode != MeasureSpec.EXACTLY)
+			height = width;
+
+		setMeasuredDimension(width, height);
     }
 
 
