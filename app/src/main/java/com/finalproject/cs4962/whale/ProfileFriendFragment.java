@@ -1,9 +1,9 @@
 package com.finalproject.cs4962.whale;
 
+import android.app.Fragment;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
-
-
-public class FriendFragment extends Fragment implements ListAdapter
+/**
+ * Created by Bharath on 12/5/2015.
+ */
+public class ProfileFriendFragment extends Fragment implements ListAdapter
 {
-    private  GridView gridView;
+    private GridView gridView;
     public static FriendFragment newInstance()
 
     {
@@ -35,7 +36,7 @@ public class FriendFragment extends Fragment implements ListAdapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_friends_list, container, false);
+        return inflater.inflate(R.layout.fragment_profile_friends_list, container, false);
 
     }
 
@@ -44,7 +45,7 @@ public class FriendFragment extends Fragment implements ListAdapter
     {
         super.onStart();
 
-        gridView = (GridView) getActivity().findViewById(R.id.friend_list_grid);
+        gridView = (GridView) getActivity().findViewById(R.id.profile_friend_list_grid);
         int spacing = (int) (getResources().getDisplayMetrics().density * 5);
         gridView.setHorizontalSpacing(spacing);
         gridView.setVerticalSpacing(spacing);

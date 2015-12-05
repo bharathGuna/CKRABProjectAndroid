@@ -3,6 +3,7 @@ package com.finalproject.cs4962.whale;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.AttributeSet;
 import android.widget.Button;
 
 /**
@@ -13,6 +14,8 @@ import android.widget.Button;
  */
 public class DrawButton extends Button
 {
+
+
     public interface DrawSymbol
     {
         void draw(Canvas canvas);
@@ -31,6 +34,10 @@ public class DrawButton extends Button
         super(context);
     }
 
+    public DrawButton(Context context, AttributeSet attrs)
+    {
+        super(context, attrs);
+    }
     @Override
     protected void onDraw(Canvas canvas)
     {
@@ -52,7 +59,7 @@ public class DrawButton extends Button
         int height = MeasureSpec.getSize(heightMeasureSpec);
         int measureWidth = width  ;
         int measureHeight = height ;
-        int widthSize = (int) (getResources().getDisplayMetrics().density * 20);
+        int widthSize = (int) (getResources().getDisplayMetrics().density * 40);
 
 
         if(widthMod == MeasureSpec.AT_MOST && heightMod == MeasureSpec.AT_MOST)

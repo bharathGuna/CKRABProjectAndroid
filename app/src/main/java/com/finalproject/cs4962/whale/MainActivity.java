@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(FriendFragment.newInstance());
         adapter.addFragment(ConversationFragment.newInstance());
         adapter.addFragment(SoundBoardFragment.newInstance());
-        adapter.addFragment(ProfileFragment.newInstance());
+        adapter.addFragment(ProfileFragment.newInstance("1",true));
         viewPager.setAdapter(adapter);
     }
 
