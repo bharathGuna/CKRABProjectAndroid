@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +151,7 @@ public class Networking
             in.read(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             CreateAccountResponse createAccountResponse = gson.fromJson(json, CreateAccountResponse.class);
@@ -188,7 +189,7 @@ public class Networking
             in.read(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             GenericResponse genericResponse = gson.fromJson(json, GenericResponse.class);
@@ -248,10 +249,10 @@ public class Networking
             byte byte2 = in.readByte();
             short inLen = toShort(byte1, byte2);
             byte[] response = new byte[inLen];
-            in.read(response, 0, inLen);
+            in.readFully(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             FriendListResponse friendListResponse = gson.fromJson(json, FriendListResponse.class);
@@ -286,10 +287,10 @@ public class Networking
             byte byte2 = in.readByte();
             short inLen = toShort(byte1, byte2);
             byte[] response = new byte[inLen];
-            in.read(response, 0, inLen);
+            in.readFully(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             PersonalProfileResponse personalProfileResponse = gson.fromJson(json, PersonalProfileResponse.class);
@@ -324,10 +325,10 @@ public class Networking
             byte byte2 = in.readByte();
             short inLen = toShort(byte1, byte2);
             byte[] response = new byte[inLen];
-            in.read(response, 0, inLen);
+            in.readFully(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             OtherProfileResponse otherProfileResponse = gson.fromJson(json, OtherProfileResponse.class);
@@ -362,10 +363,10 @@ public class Networking
             byte byte2 = in.readByte();
             short inLen = toShort(byte1, byte2);
             byte[] response = new byte[inLen];
-            in.read(response, 0, inLen);
+            in.readFully(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             ConversationListResponse conversationListResponse = gson.fromJson(json, ConversationListResponse.class);
@@ -400,10 +401,10 @@ public class Networking
             byte byte2 = in.readByte();
             short inLen = toShort(byte1, byte2);
             byte[] response = new byte[inLen];
-            in.read(response, 0, inLen);
+            in.readFully(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             ConversationMessagesResponse conversationMessagesResponse = gson.fromJson(json, ConversationMessagesResponse.class);
@@ -438,10 +439,10 @@ public class Networking
             byte byte2 = in.readByte();
             short inLen = toShort(byte1, byte2);
             byte[] response = new byte[inLen];
-            in.read(response, 0, inLen);
+            in.readFully(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             SoundboardResponse soundboardResponse = gson.fromJson(json, SoundboardResponse.class);
@@ -479,7 +480,7 @@ public class Networking
             in.read(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             GenericResponse genericResponse = gson.fromJson(json, GenericResponse.class);
@@ -517,7 +518,7 @@ public class Networking
             in.read(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             GenericResponse genericResponse = gson.fromJson(json, GenericResponse.class);
@@ -564,7 +565,7 @@ public class Networking
             in.read(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             CreateConversationResponse createConversationResponse = gson.fromJson(json, CreateConversationResponse.class);
@@ -602,7 +603,7 @@ public class Networking
             in.read(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             GenericResponse genericResponse = gson.fromJson(json, GenericResponse.class);
@@ -640,7 +641,7 @@ public class Networking
             in.read(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             GenericResponse genericResponse = gson.fromJson(json, GenericResponse.class);
@@ -679,7 +680,7 @@ public class Networking
             in.read(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             GenericResponse genericResponse = gson.fromJson(json, GenericResponse.class);
@@ -718,7 +719,7 @@ public class Networking
             in.read(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             GenericResponse genericResponse = gson.fromJson(json, GenericResponse.class);
@@ -756,7 +757,7 @@ public class Networking
             in.read(response, 0, inLen);
 
             connection.close();
-            String json = new String(response, "ASCII");
+            String json = byteArrayToString(response);
             Gson gson = new Gson();
 
             UpdateResponse updateResponse = gson.fromJson(json, UpdateResponse.class);
@@ -773,14 +774,15 @@ public class Networking
     {
         byte[] type = stringToByteArray(mt);
         byte[] payload = stringToByteArray(msg);
-        short outLen = (short) payload.length;
-        byte[] length = fromShort(outLen);
+        int outLen = payload.length;
+        //short outLen = (short) payload.length;
+        byte[] length = fromInt(outLen);
 
         List<Byte> out = new ArrayList<>();
 
         for (int i = 0; i < type.length; i++)
             out.add(type[i]);
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 4; i++)
             out.add(length[i]);
         for (int i = 0; i < payload.length; i++)
             out.add(payload[i]);
@@ -793,9 +795,21 @@ public class Networking
     {
         try
         {
-            return payload.getBytes("ASCII");
+            return payload.getBytes("UTF-8");
         }
         catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    private static String byteArrayToString(byte[] payload)
+    {
+        try
+        {
+            return new String(payload, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e)
         {
             return null;
         }
@@ -807,6 +821,25 @@ public class Networking
         for (int i = 0; i < oBytes.length; i++)
             bytes[i] = oBytes[i];
         return bytes;
+    }
+
+    public static byte[] fromInt(int num)
+    {
+        byte byte4 = (byte) (num >> 24);
+        byte byte3 = (byte) (num >> 16);
+        byte byte2 = (byte) (num >> 8);
+        byte byte1 = (byte) (num & 0xFF);
+        return new byte[]{byte1, byte2, byte3, byte4};
+    }
+
+    private static int toInt(byte byte1, byte byte2, byte byte3, byte byte4)
+    {
+        int b1, b2, b3, b4;
+        b1 = byte1 < 0 ? byte1 + 256 : byte1;
+        b2 = byte2 < 0 ? byte2 + 256 : byte2;
+        b3 = byte3 < 0 ? byte3 + 256 : byte3;
+        b4 = byte4 < 0 ? byte4 + 256 : byte4;
+        return (b4 << 24) + (b3 << 16) + (b2 << 8) + b1;
     }
 
     private static byte[] fromShort(short num)
