@@ -88,7 +88,7 @@ public class CircularImageView extends ImageView
 		if(canvas.getHeight() < canvasSize)
 			canvasSize = canvas.getHeight();
 
-        int padding = (int)(canvasSize * .125f);
+        int padding = (int) (4.0f * getResources().getDisplayMetrics().density);//(int)(canvasSize * .125f);
         canvasSize -= 2 * padding;
         int heightPadding = padding;
 

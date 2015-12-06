@@ -2,7 +2,9 @@ package com.finalproject.cs4962.whale;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -21,31 +23,36 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
     private ValueAnimator animator = new ValueAnimator();
     private int length = 5;
     private float percentage = 0.5f;
+    private boolean touchable = true;
 
-    public WaveView(Context context)
+    public WaveView(Context context, boolean touchable)
     {
         super(context);
-        init();
+        init(touchable);
     }
 
-    public WaveView(Context context, AttributeSet attrs)
+    public WaveView(Context context, AttributeSet attributeSet)
     {
-        super(context, attrs);
+        super(context, attributeSet);
+        init(false);
     }
 
-    private void init()
+    private void init(boolean touchable)
     {
         setMinimumHeight(minHeight);
         setMinimumWidth(minWidth);
         animator.setIntValues(0, 100);
         animator.setDuration(length * 1000);
         animator.addUpdateListener(this);
+        this.touchable = touchable;
         //setBackgroundColor(Color.WHITE);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
+        if (!touchable)
+            return false;
 
         PointF touchPoint = new PointF(event.getX(), event.getY());
         if (touchPoint.x > playRect.left && touchPoint.x < playRect.right &&
@@ -123,7 +130,14 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
         // 2 seconds is 1 period
         super.onDraw(canvas);
 
-        int pad = (int) (4.0f * getResources().getDisplayMetrics().density);
+        int pad = (int) (6.0f * getResources().getDisplayMetrics().density);
+
+        RectF rounded = new RectF();
+        rounded.left = getPaddingLeft();
+        rounded.top = getPaddingTop();
+        rounded.right = getWidth() - getPaddingRight();
+        rounded.bottom = getHeight() - getPaddingBottom();
+
         playRect.left = getPaddingLeft() + pad;
         playRect.top = getPaddingTop() + pad;
         playRect.right = getHeight() - pad;
@@ -174,16 +188,16 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
         playPaint.setColor(getResources().getColor(R.color.colorAccent) & 0xCAFFFFFF);
 
         waveRect.left = playRect.right;
-        waveRect.top = playRect.top + pad;
+        waveRect.top = rounded.top;
         waveRect.right = getWidth() - getPaddingRight() - pad;
-        waveRect.bottom = getHeight() - getPaddingBottom() - pad;
+        waveRect.bottom = rounded.bottom;
 
         Path wavePath = new Path();
         Path playPath = new Path();
         int totalPlayPathPoints = (int) (percentage * 100);
         float periods = 6;
         float deltaX = (waveRect.width()) / 100;
-        float scaleY = waveRect.height() / 2;
+        float scaleY = waveRect.height() / 2 - pad;
         PointF start = new PointF(waveRect.left, waveRect.centerY());
         for (int i = 0; i < 100; i++)
         {
@@ -205,11 +219,14 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
             }
         }
 
-//        float scaledWidth = waveRect.width();
-//        float stepX =
+        Paint rectPaint = new Paint(playPaint);
+        rectPaint.setStrokeWidth(0.025f * getHeight());
+        rectPaint.setColor(getResources().getColor(R.color.colorAccent));
 
-        canvas.drawPath(playPath, playPaint);
+        canvas.drawRoundRect(rounded, 7 * pad, 7 * pad, rectPaint);
+
         canvas.drawPath(wavePath, wavePaint);
+        canvas.drawPath(playPath, playPaint);
         canvas.drawPath(triPath, triPaint);
         canvas.drawOval(playRect, circlePaint);
 

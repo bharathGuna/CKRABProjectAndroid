@@ -1,19 +1,23 @@
 package com.finalproject.cs4962.whale;
 
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 
-public class ConversationFragment extends Fragment implements ListAdapter
+public class ConversationFragment extends Fragment implements ListAdapter, AdapterView.OnItemClickListener
 {
 
     public static ConversationFragment newInstance()
@@ -40,8 +44,13 @@ public class ConversationFragment extends Fragment implements ListAdapter
     public void onStart()
     {
         super.onStart();
-        ListView listView = (ListView)getActivity().findViewById(R.id.convo_list_view);
+        ListView listView = (ListView) getActivity().findViewById(R.id.convo_list_view);
         listView.setAdapter(this);
+        listView.setOnItemClickListener(this);
+        int[] colors = {0, getResources().getColor(R.color.textColorPrimary), 0}; // red for the example
+        listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
+        int height = (int) (2 * getResources().getDisplayMetrics().density);
+        listView.setDividerHeight(height);
     }
 
     @Override
@@ -53,7 +62,7 @@ public class ConversationFragment extends Fragment implements ListAdapter
     @Override
     public int getCount()
     {
-        return 5;
+        return 9;
     }
 
     @Override
@@ -93,11 +102,12 @@ public class ConversationFragment extends Fragment implements ListAdapter
         LinearLayout rootLayout = new LinearLayout(getActivity());
         CircularImageView profile = new CircularImageView(getActivity());
         profile.setImageResource(R.drawable.whale);
-        WaveView msg = new WaveView(getActivity());
+        WaveView msg = new WaveView(getActivity(), false);
+        int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
         rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
         rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
-        int padding = (int)(8.0f * getResources().getDisplayMetrics().density);
-        rootLayout.setPadding(0, padding, 0, padding);
+
+        rootLayout.setPadding(padding, 2*padding, padding, 2*padding);
         return rootLayout;
     }
 
@@ -116,12 +126,24 @@ public class ConversationFragment extends Fragment implements ListAdapter
     @Override
     public boolean areAllItemsEnabled()
     {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled(int i)
     {
-        return false;
+        return true;
+    }
+
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        //Networking.Conversation convo = (Networking.Conversation) getItem(i);
+        /* Request for that conversation */
+        Intent toConversationIntent = new Intent();
+        toConversationIntent.setClass(getActivity(), ConversationActivity.class);
+        startActivity(toConversationIntent);
+
     }
 }
