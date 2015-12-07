@@ -20,7 +20,6 @@ public class ProfileFriendFragment extends Fragment implements ListAdapter
 {
     private GridView gridView;
     public static ProfileFriendFragment newInstance()
-
     {
         ProfileFriendFragment fragment = new ProfileFriendFragment();
         return fragment;
@@ -36,20 +35,10 @@ public class ProfileFriendFragment extends Fragment implements ListAdapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_profile_friends_list, container, false);
-
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-        gridView = (GridView) getActivity().findViewById(R.id.profile_friend_list_grid);
-        int spacing = (int) (getResources().getDisplayMetrics().density * 5);
-        gridView.setHorizontalSpacing(spacing);
-        gridView.setVerticalSpacing(spacing);
+        LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.fragment_profile_friends_list, container, false);
+        gridView = (GridView) layout.findViewById(R.id.profile_friend_list_grid);
         gridView.setAdapter(this);
+        return layout;
 
     }
 

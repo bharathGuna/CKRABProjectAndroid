@@ -1,5 +1,6 @@
 package com.finalproject.cs4962.whale;
 
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -48,9 +50,27 @@ public class FriendFragment extends Fragment implements ListAdapter
         gridView.setHorizontalSpacing(spacing);
         gridView.setVerticalSpacing(spacing);
         gridView.setAdapter(this);
+        gridView.setOnItemClickListener(getOnItemClickListener());
 
     }
 
+    private AdapterView.OnItemClickListener getOnItemClickListener()
+    {
+        AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                Intent toProfile = new Intent();
+                toProfile.setClass(getActivity(), ProfileFragment.class);
+                startActivity(toProfile);
+            }
+        };
+
+
+
+         return listener;
+    }
     @Override
     public boolean areAllItemsEnabled()
     {
@@ -139,5 +159,6 @@ public class FriendFragment extends Fragment implements ListAdapter
     {
         return getCount() > 0;
     }
+
 
 }

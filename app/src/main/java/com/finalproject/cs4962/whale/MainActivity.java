@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -48,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.getTabAt(2).setIcon(R.drawable.soundboard_icon);
         tabLayout.getTabAt(3).setIcon(R.drawable.profile_icon);
     }
-    class ViewPagerAdapter extends FragmentStatePagerAdapter {
+    class ViewPagerAdapter extends FragmentPagerAdapter
+    {
         private final List<Fragment> mFragmentList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {

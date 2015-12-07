@@ -1,20 +1,29 @@
 package com.finalproject.cs4962.whale;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 
+import android.provider.MediaStore;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +47,8 @@ public class ProfileFragment extends Fragment
 
     final static String USERID = "USERID";
     final static String MODE = "MODE";
-
+    private static final int SELECT_SINGLE_PICTURE = 101;
+    public static final String IMAGE_TYPE = "image/*";
     public static ProfileFragment newInstance(String id, boolean mode)
     {
         ProfileFragment fragment = new ProfileFragment();
@@ -70,24 +80,16 @@ public class ProfileFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.fragment_profile,container,false);
 
-        return inflater.inflate(R.layout.fragment_profile,container,false);
-    }
-
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        //getting the views.
-        profilePic = (CircularImageView)getActivity().findViewById(R.id.profilePic);
-        name = (TextView) getActivity().findViewById(R.id.name);
-        totalMessage = (TextView) getActivity().findViewById(R.id.totalMessages);
-        friendDate = (TextView) getActivity().findViewById(R.id.friended);
-        add = (DrawButton)getActivity().findViewById(R.id.addFriend);
-        delete = (DrawButton)getActivity().findViewById(R.id.deleteFriend);
-        tabLayout = (TabLayout) getActivity().findViewById(R.id.profileTabs);
-        viewPager = (ViewPager) getActivity().findViewById(R.id.profileViewpager);
+        profilePic = (CircularImageView)layout.findViewById(R.id.profilePic);
+        name = (TextView) layout.findViewById(R.id.name);
+        totalMessage = (TextView) layout.findViewById(R.id.totalMessages);
+        friendDate = (TextView) layout.findViewById(R.id.friended);
+        add = (DrawButton)layout.findViewById(R.id.addFriend);
+        delete = (DrawButton)layout.findViewById(R.id.deleteFriend);
+        tabLayout = (TabLayout) layout.findViewById(R.id.profileTabs);
+        viewPager = (ViewPager) layout.findViewById(R.id.profileViewpager);
 
         //setting up the profile pic
         //depending on users or friends
@@ -95,12 +97,15 @@ public class ProfileFragment extends Fragment
         //setting up the buttons
 
 
-        //setting up the tablayout
-        setupViewPager(viewPager);
+       viewPager.removeAllViews();
+       viewPager.setAdapter(null);
+       setupViewPager(viewPager);
 
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.setTabTextColors(Color.WHITE,Color.WHITE);
+        tabLayout.setTabTextColors(Color.WHITE, Color.WHITE);
 
+        profilePic.setOnClickListener(selectPicture());
+        return layout;
     }
 
     private DrawButton.DrawSymbol drawDeleteSymbol()
@@ -145,7 +150,7 @@ public class ProfileFragment extends Fragment
                 paint.setStyle(Paint.Style.STROKE);
 
                 float padding = width * .1f;
-                canvas.drawLine(width/2, padding, width/2, height-padding, paint);
+                canvas.drawLine(width / 2, padding, width / 2, height - padding, paint);
                 canvas.drawLine(padding, height / 2, width - padding, height / 2, paint);
             }
         };
@@ -154,16 +159,54 @@ public class ProfileFragment extends Fragment
     }
 
 
+    private View.OnClickListener selectPicture()
+    {
+        View.OnClickListener listener = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent = new Intent();
+                intent.setType(IMAGE_TYPE);
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent,
+                        "Select Image"), SELECT_SINGLE_PICTURE);
+            }
+        };
+
+        return listener;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == -1)
+        {
+            if (requestCode == SELECT_SINGLE_PICTURE)
+            {
+                Uri selectedImage = data.getData();
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                cursor.close();
+                profilePic.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+
+            }
+        }
+    }
 
     private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(DescriptionFragment.newInstance(), "About Me");
         adapter.addFragment(ProfileFriendFragment.newInstance(), "Friends");
         viewPager.setAdapter(adapter);
     }
 
 
-    class ViewPagerAdapter extends FragmentStatePagerAdapter
+    class ViewPagerAdapter extends FragmentPagerAdapter
     {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentNames = new ArrayList<>();

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * Created by Khong on 12/5/15.
@@ -25,7 +27,7 @@ public class DescriptionFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return new EditText(getContext());
     }
 
     @Override
