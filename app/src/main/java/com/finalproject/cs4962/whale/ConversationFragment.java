@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -99,12 +100,25 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
     public View getView(int i, View view, ViewGroup viewGroup)
     {
         //Networking.Conversation convo = (Networking.Conversation) getItem(i);
-        LinearLayout rootLayout = new LinearLayout(getActivity());
+        LinearLayout userLayout = new LinearLayout(getActivity());
+        userLayout.setOrientation(LinearLayout.VERTICAL);
+
         CircularImageView profile = new CircularImageView(getActivity());
         profile.setImageResource(R.drawable.whale);
+
+        TextView username = new TextView(getActivity());
+        username.setText("Charles Khong");
+        username.setLines(3);
+        username.setGravity(Gravity.CENTER);
+        username.setTextColor(getResources().getColor(R.color.textColorPrimary));
+        userLayout.addView(profile, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 3));
+        userLayout.addView(username, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 2));
+
+
+        LinearLayout rootLayout = new LinearLayout(getActivity());
         WaveView msg = new WaveView(getActivity(), false);
         int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
-        rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
+        rootLayout.addView(userLayout, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
         rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
 
         rootLayout.setPadding(padding, 2*padding, padding, 2*padding);

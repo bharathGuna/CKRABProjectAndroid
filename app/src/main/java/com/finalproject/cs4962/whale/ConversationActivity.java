@@ -2,13 +2,16 @@ package com.finalproject.cs4962.whale;
 
 import android.app.Activity;
 import android.database.DataSetObserver;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class ConversationActivity extends Activity implements ListAdapter
 {
@@ -22,6 +25,13 @@ public class ConversationActivity extends Activity implements ListAdapter
 
         listView = (ListView) findViewById(R.id.messages_list);
         listView.setAdapter(this);
+
+        View separator = findViewById(R.id.separator);
+        int[] colors = {0, getResources().getColor(R.color.textColorPrimary), 0}; // red for the example
+        separator.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
+
+        TextView name = (TextView)findViewById(R.id.title_text);
+        name.setText("Charles Khong");
     }
 
     @Override
@@ -34,6 +44,21 @@ public class ConversationActivity extends Activity implements ListAdapter
     protected void onResume()
     {
         super.onResume();
+    }
+
+    public void backPressed(View view)
+    {
+        super.onBackPressed();
+    }
+
+    public void recordPressed(View view)
+    {
+
+    }
+
+    public void soundboardPressed(View view)
+    {
+
     }
 
     @Override
