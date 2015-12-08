@@ -1,7 +1,13 @@
 package com.finalproject.cs4962.whale;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Base64;
+import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +35,7 @@ public class DataManager
 
     public interface GetFriendsListener
     {
-        void onGetFriends(List<Networking.Friend> friends);
+        void onGetFriends(List<Friend> friends);
     }
 
     public interface GetUserProfileListener
@@ -89,9 +95,14 @@ public class DataManager
         void onUpdateReceived(Networking.UpdateResponse response);
     }
 
+    public interface OnUserFoundListener
+    {
+        void onUserFound(Networking.FindUserResponse response);
+    }
+
     private String userID;
     /* TODO: Convert to usable data objects */
-    private List<Networking.Conversation> conversationList;
+    private List<Conversation> conversationList;
     private List<Networking.Soundbite> globalSoundboard;
     //? current convo messages list
 
@@ -109,6 +120,7 @@ public class DataManager
     private OnProfileUpdatedListener onProfileUpdatedListener;
     private OnSoundbiteUploadedListener onSoundbiteUploadedListener;
     private OnUpdateReceivedListener onUpdateReceivedListener;
+    private OnUserFoundListener onUserFoundListener;
 
     private DataManager()
     {
@@ -189,6 +201,11 @@ public class DataManager
     public void setOnUpdateReceivedListener(OnUpdateReceivedListener onUpdateReceivedListener)
     {
         this.onUpdateReceivedListener = onUpdateReceivedListener;
+    }
+
+    public void setOnUserFoundListener(OnUserFoundListener onUserFoundListener)
+    {
+        this.onUserFoundListener = onUserFoundListener;
     }
 
     public void createAccount(String username)
@@ -290,7 +307,24 @@ public class DataManager
 
                 if (friendListResponse == null)
                     return;
-                List<Networking.Friend> friends = Arrays.asList(friendListResponse.friends);
+                List<Friend> friends = new ArrayList<>();
+                for(Networking.Friend friend : friendListResponse.friends)
+                {
+                    String name = friend.name;
+                    String id = friend.userID;
+                    String pic = friend.profilePic;
+                    Bitmap ppic = stringToBitmap(pic);
+                    boolean online = friend.online;
+
+                    if (ppic == null)
+                    {
+                        Log.i("String to Bitmap", "Error occurred converting string to bitmap");
+                        return;
+                    }
+
+                    Friend frnd = new Friend(name, id, ppic, online);
+                    friends.add(frnd);
+                }
 
                 /* Notify listener */
                 if (getFriendsListener != null)
@@ -370,8 +404,16 @@ public class DataManager
                 if (conversationListResponse == null)
                     return;
 
-                /* Set the conversation list */
-                conversationList = new ArrayList<>(Arrays.asList(conversationListResponse.conversations));
+                for (Networking.Conversation conv : conversationListResponse.conversations)
+                {
+                    Networking.User[] users = conv.users;
+                    String lm = conv.lastMessage;
+                    String ldt = conv.lastDateTime;
+                    String convoID = conv.convoID;
+
+                    Conversation convo = new Conversation(users, lm, ldt, convoID);
+                    conversationList.add(convo);
+                }
 
                 if (getConvoListListener != null)
                     getConvoListListener.onGetConvoList();
@@ -397,6 +439,10 @@ public class DataManager
                 super.onPostExecute(conversationMessagesResponse);
                 if (conversationMessagesResponse == null)
                     return;
+                /* TODO: Save these to their folder designated by convoID
+                    or let the convo activity do that, regardless
+                    the messages must be converted and saved */
+
                 if (getNewMessagesListener != null)
                     getNewMessagesListener.onGetNewMessages();
             }
@@ -422,7 +468,7 @@ public class DataManager
 
                 if (soundboardResponse == null)
                     return;
-                /* Set the board, might need to save all the messages as well */
+                /* TODO: The board can contain the bites which have an id for where to look for the soundbite */
                 globalSoundboard = new ArrayList<>(Arrays.asList(soundboardResponse.soundbites));
 
                 if (getGlobalSoundboardListener != null)
@@ -506,6 +552,8 @@ public class DataManager
                 /* Refresh convo list */
                 refreshConvoList();
 
+                /* TODO: Consider adding a folder for this new convo for messages to be stored in */
+
                 /* Should go into the conversation */
                 if (onConvoListChangedListener != null)
                     onConvoListChangedListener.onConvoCreated(createConversationResponse.convoID);
@@ -535,6 +583,8 @@ public class DataManager
 
                 refreshConvoList();
 
+                /* TODO: Remove that folder */
+
                 if (onConvoListChangedListener != null)
                     onConvoListChangedListener.onConvoDeleted(genericResponse);
             }
@@ -561,6 +611,7 @@ public class DataManager
                     return;
 
                 // ? append to current convo list
+                /* TODO: Add this message to the convo, if sent successfully */
 
                 if (onMessageSentListener != null)
                     onMessageSentListener.onMessageSent(genericResponse);
@@ -611,6 +662,7 @@ public class DataManager
                 if (genericResponse == null)
                     return;
                 /* Add to soundboard */
+                /* TODO: Save this clip on the phone? */
                 if (onSoundbiteUploadedListener != null)
                     onSoundbiteUploadedListener.onSoundbiteUploaded(genericResponse);
             }
@@ -646,5 +698,127 @@ public class DataManager
         requestTask.execute(userID);
     }
 
+    public void findUserByUsername(String username)
+    {
+        AsyncTask<String, Integer, Networking.FindUserResponse> findTask = new AsyncTask<String, Integer, Networking.FindUserResponse>()
+        {
+            @Override
+            protected Networking.FindUserResponse doInBackground(String... strings)
+            {
+                return Networking.findUser(strings[0]);
+            }
+
+            @Override
+            protected void onPostExecute(Networking.FindUserResponse findUserResponse)
+            {
+                super.onPostExecute(findUserResponse);
+                if (findUserResponse == null)
+                    return;
+
+                if (onUserFoundListener != null)
+                    onUserFoundListener.onUserFound(findUserResponse);
+            }
+        };
+
+        findTask.execute(username);
+    }
+
+    /**
+     * Returns null if something went wrong
+     * @param bm
+     * @return
+     */
+    public String bitmapToString(Bitmap bm)
+    {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] bmBytes = stream.toByteArray();
+        byte[] b64 = Base64.encode(bmBytes, Base64.DEFAULT);
+        String pic = null;
+        try
+        {
+            pic = new String(b64, "UTF-8");
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            return pic;
+        }
+    }
+
+    /**
+     * Returns null if something went wrong
+     * @param pic
+     * @return
+     */
+    public Bitmap stringToBitmap(String pic)
+    {
+        byte[] b64, bitmapBytes;
+        Bitmap bm = null;
+        try
+        {
+            b64 = pic.getBytes("UTF-8");
+            bitmapBytes = Base64.decode(b64, Base64.DEFAULT);
+            bm = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            return bm;
+        }
+    }
+
+    /**
+     * Returns null if something went wrong
+     * @param message
+     * @return
+     */
+    public String messageBytesToString(byte[] message)
+    {
+        byte[] b64 = Base64.encode(message, Base64.DEFAULT);
+        String msg = "";
+        try
+        {
+            msg = new String(b64, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            return msg;
+        }
+    }
+
+    /**
+     * Returns null if something went wrong
+     * @param message
+     * @return
+     */
+    public byte[] stringToMessageBytes(String message)
+    {
+        byte[] b64, msg = null;
+        try
+        {
+            b64 = message.getBytes("UTF-8");
+            msg = Base64.decode(b64, Base64.DEFAULT);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            return msg;
+        }
+    }
 
 }

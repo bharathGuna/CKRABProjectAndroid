@@ -157,6 +157,7 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
         /* Request for that conversation */
         Intent toConversationIntent = new Intent();
         toConversationIntent.setClass(getActivity(), ConversationActivity.class);
+        //toConversationIntent.putExtra("convoID", "123");
         startActivity(toConversationIntent);
 
     }

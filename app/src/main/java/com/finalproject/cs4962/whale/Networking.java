@@ -71,6 +71,7 @@ public class Networking
     public class User
     {
         public String name;
+        public String userID;
         public String profilePic;
     }
 
@@ -123,6 +124,12 @@ public class Networking
         public String userID;
     }
 
+    public class FindUserResponse
+    {
+        public String username;
+        public String userID;
+    }
+
     public static final String SERVER_IP = "192.168.1.22";
     public static final int SERVER_PORT = 2000;
 
@@ -146,7 +153,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.read(response, 0, inLen);
 
@@ -184,7 +194,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.read(response, 0, inLen);
 
@@ -247,7 +260,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.readFully(response, 0, inLen);
 
@@ -285,7 +301,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.readFully(response, 0, inLen);
 
@@ -323,7 +342,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.readFully(response, 0, inLen);
 
@@ -361,7 +383,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.readFully(response, 0, inLen);
 
@@ -399,7 +424,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.readFully(response, 0, inLen);
 
@@ -437,7 +465,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.readFully(response, 0, inLen);
 
@@ -475,9 +506,12 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
-            in.read(response, 0, inLen);
+            in.readFully(response, 0, inLen);
 
             connection.close();
             String json = byteArrayToString(response);
@@ -513,7 +547,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.read(response, 0, inLen);
 
@@ -560,7 +597,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.read(response, 0, inLen);
 
@@ -598,7 +638,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.read(response, 0, inLen);
 
@@ -636,7 +679,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.read(response, 0, inLen);
 
@@ -675,7 +721,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.read(response, 0, inLen);
 
@@ -714,7 +763,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.read(response, 0, inLen);
 
@@ -752,7 +804,10 @@ public class Networking
             /* Read the response from server */
             byte byte1 = in.readByte();
             byte byte2 = in.readByte();
-            short inLen = toShort(byte1, byte2);
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
             byte[] response = new byte[inLen];
             in.read(response, 0, inLen);
 
@@ -766,6 +821,47 @@ public class Networking
         catch (Exception e)
         {
             Log.i("Networking", "Error requesting for updates for user: " + e);
+            return null;
+        }
+    }
+
+    public static FindUserResponse findUser(String username)
+    {
+        try
+        {
+            Socket connection = new Socket(SERVER_IP, SERVER_PORT);
+            DataInputStream in = new DataInputStream(connection.getInputStream());
+            DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+
+            /* Build the message */
+            String type = "findusr";
+            String message = String.format("{ \"username\" : \"%s\" }", username);
+            byte[] payload = packMessage(type, message);
+
+            /* Write the message to server */
+            out.write(payload);
+            out.flush();
+
+            /* Read the response from server */
+            byte byte1 = in.readByte();
+            byte byte2 = in.readByte();
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
+            byte[] response = new byte[inLen];
+            in.read(response, 0, inLen);
+
+            connection.close();
+            String json = byteArrayToString(response);
+            Gson gson = new Gson();
+
+            FindUserResponse findUserResponse = gson.fromJson(json, FindUserResponse.class);
+            return findUserResponse;
+        }
+        catch (Exception e)
+        {
+            Log.i("Networking", "Error trying to find user: " + e);
             return null;
         }
     }

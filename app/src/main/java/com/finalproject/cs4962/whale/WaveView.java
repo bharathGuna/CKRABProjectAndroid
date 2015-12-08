@@ -51,6 +51,7 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
+        /* TODO: Move this code outside of the view */
         if (!touchable)
             return false;
 
@@ -59,7 +60,10 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
                 touchPoint.y > playRect.top && touchPoint.y < playRect.bottom)
         {
             if (!animator.isStarted())
+            {
+                animator.setIntValues((int) (percentage * 100), 100);
                 animator.start();
+            }
         }
         else
         {
@@ -72,7 +76,7 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
 
         if (animator.isRunning())
         {
-            if (event.getAction() == MotionEvent.ACTION_UP)
+            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
             {
                 animator.cancel();
             }

@@ -3,19 +3,39 @@ package com.finalproject.cs4962.whale;
 import android.app.Activity;
 import android.database.DataSetObserver;
 import android.graphics.drawable.GradientDrawable;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class ConversationActivity extends Activity implements ListAdapter
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ConversationActivity extends Activity implements ListAdapter, View.OnTouchListener, AdapterView.OnItemClickListener
 {
+    private String FILE_PATH;
     private ListView listView;
+    private MediaRecorder audioRecorder;
+    private List<Message> messages = new ArrayList<>();
+    private String convoID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -25,6 +45,7 @@ public class ConversationActivity extends Activity implements ListAdapter
 
         listView = (ListView) findViewById(R.id.messages_list);
         listView.setAdapter(this);
+        listView.setOnItemClickListener(this);
 
         View separator = findViewById(R.id.separator);
         int[] colors = {0, getResources().getColor(R.color.textColorPrimary), 0}; // red for the example
@@ -32,6 +53,12 @@ public class ConversationActivity extends Activity implements ListAdapter
 
         TextView name = (TextView)findViewById(R.id.title_text);
         name.setText("Charles Khong");
+
+        ImageButton recordButton = (ImageButton)findViewById(R.id.record_button);
+        recordButton.setOnTouchListener(this);
+
+        FILE_PATH = getFilesDir().getAbsolutePath();
+        //convoID = getIntent().getExtras().getString("convoID");
     }
 
     @Override
@@ -51,14 +78,79 @@ public class ConversationActivity extends Activity implements ListAdapter
         super.onBackPressed();
     }
 
-    public void recordPressed(View view)
+    public void soundboardPressed(View view)
     {
+        if (messages.size() == 0)
+            return;
+        byte[] msg1 = null;
+
+        try
+        {
+            File file = new File(FILE_PATH + "/0");
+            long size = file.length();
+            FileInputStream fileInputStream = new FileInputStream(file.getPath());
+            DataInputStream in = new DataInputStream(fileInputStream);
+            msg1 = new byte[(int)size];
+            in.readFully(msg1, 0, (int)size);
+            Log.i("File read", "File Size: " + msg1.length);
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
 
     }
 
-    public void soundboardPressed(View view)
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent)
     {
+        if (view instanceof ImageButton)
+        {
+            if (view == findViewById(R.id.record_button))
+            {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    try
+                    {
+                        audioRecorder = new MediaRecorder();
+                        audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                        audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                        audioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+                        String path = FILE_PATH + "/" + messages.size();
+                        audioRecorder.setOutputFile(path);
 
+                        audioRecorder.prepare();
+                        audioRecorder.start();
+                        Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_SHORT).show();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                        audioRecorder = null;
+                    }
+                }
+                else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                        motionEvent.getAction() == MotionEvent.ACTION_CANCEL)
+                {
+
+                    if (audioRecorder != null)
+                    {
+                        audioRecorder.stop();
+                        audioRecorder.release();
+                        audioRecorder = null;
+                        Message msg = new Message("" + messages.size());
+                        messages.add(msg);
+                        listView.invalidateViews();
+
+                        Toast.makeText(getApplicationContext(), "Recording finished", Toast.LENGTH_SHORT).show();
+
+                    }
+
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -70,7 +162,7 @@ public class ConversationActivity extends Activity implements ListAdapter
     @Override
     public int getCount()
     {
-        return 13;
+        return messages.size();
     }
 
     @Override
@@ -82,7 +174,7 @@ public class ConversationActivity extends Activity implements ListAdapter
     @Override
     public Object getItem(int i)
     {
-        return null;
+        return messages.get(i);
     }
 
     @Override
@@ -109,7 +201,7 @@ public class ConversationActivity extends Activity implements ListAdapter
         LinearLayout rootLayout = new LinearLayout(this);
         CircularImageView profile = new CircularImageView(this);
         profile.setImageResource(R.drawable.whale);
-        WaveView msg = new WaveView(this, true);
+        WaveView msg = new WaveView(this, false);
         int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
         if (i % 2 == 0)
         {
@@ -140,12 +232,39 @@ public class ConversationActivity extends Activity implements ListAdapter
     @Override
     public boolean areAllItemsEnabled()
     {
-        return false;
+        return true;
     }
 
     @Override
     public boolean isEnabled(int i)
     {
-        return false;
+        return true;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+    {
+        Message msg = (Message) getItem(i);
+        String path = FILE_PATH + "/" + msg.messageID;
+        MediaPlayer player = new MediaPlayer();
+        try
+        {
+            player.setDataSource(path);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+        {
+            player.prepare();
+            player.start();
+            Toast.makeText(getApplicationContext(), "Playing", Toast.LENGTH_SHORT).show();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }
