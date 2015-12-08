@@ -60,6 +60,7 @@
         android:stretchMode="columnWidth"
         android:gravity="center"
         android:id="@+id/friend_list_grid"
+        android:layout_marginTop="10dp"
         android:listSelector="@android:color/transparent">
 
 
@@ -70,6 +71,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"/>
-        <!--android:src="@drawable/add_button"/>-->
+        android:src="@drawable/add_button"/>
 </LinearLayout>

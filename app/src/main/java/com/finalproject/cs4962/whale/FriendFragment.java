@@ -2,6 +2,8 @@ package com.finalproject.cs4962.whale;
 
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,11 +17,14 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class FriendFragment extends Fragment implements ListAdapter
 {
     private  GridView gridView;
+    private List<Friend> friends;
     public static FriendFragment newInstance()
     {
         FriendFragment fragment = new FriendFragment();
@@ -30,6 +35,13 @@ public class FriendFragment extends Fragment implements ListAdapter
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Bitmap image = BitmapFactory.decodeResource(getResources(),R.drawable.whale);
+        friends = new ArrayList<>();
+        for(int i = 0; i < 9; i ++)
+        {
+            Friend f = new Friend(""+i, ""+i, image, true );
+            friends.add(f);
+        }
     }
 
     @Override
@@ -62,7 +74,7 @@ public class FriendFragment extends Fragment implements ListAdapter
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
                 Intent toProfile = new Intent();
-                toProfile.setClass(getActivity(), ProfileFragment.class);
+                toProfile.setClass(getActivity(), ProfileActivity.class);
                 startActivity(toProfile);
             }
         };
@@ -98,13 +110,13 @@ public class FriendFragment extends Fragment implements ListAdapter
     @Override
     public int getCount()
     {
-        return 5; // Data manager .count
+        return friends.size(); // Data manager .count
     }
 
     @Override
     public Object getItem(int i)
     {
-        return null; // Object associated with that position
+        return friends.get(i); // Object associated with that position
     }
 
     @Override
@@ -122,15 +134,17 @@ public class FriendFragment extends Fragment implements ListAdapter
     @Override
     public View getView(int i, View view, ViewGroup viewGroup)
     {
+        Friend friend = (Friend)getItem(i);
         LinearLayout layout = new LinearLayout(getContext());
         layout.setOrientation(LinearLayout.VERTICAL);
         CircularImageView imageView;
         TextView name;
         int size = (int) (getResources().getDisplayMetrics().widthPixels/gridView.getNumColumns() );
         imageView = new CircularImageView(getContext());
-        imageView.setImageResource(R.drawable.whale);
+        imageView.setImageBitmap(friend.profilePic);
+        imageView.setName(friend.name);
         name = new TextView(getContext());
-        name.setText("Bharath Gunasekaran");
+        name.setText(friend.name);
         name.setLines(3);
         name.setTextSize(getResources().getDisplayMetrics().density * 5f);
         name.setGravity(Gravity.CENTER);
