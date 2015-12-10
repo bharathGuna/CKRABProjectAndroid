@@ -5,8 +5,8 @@ import android.database.DataSetObserver;
 import android.graphics.drawable.GradientDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,17 +19,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class ConversationActivity extends Activity implements ListAdapter, View.OnTouchListener, AdapterView.OnItemClickListener
+public class ConversationActivity extends Activity implements ListAdapter, View.OnTouchListener, AdapterView.OnItemClickListener, DataManager.OnMessageSentListener, DataManager.GetNewMessagesListener
 {
     private String FILE_PATH;
     private ListView listView;
@@ -57,8 +58,18 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         ImageButton recordButton = (ImageButton)findViewById(R.id.record_button);
         recordButton.setOnTouchListener(this);
 
-        FILE_PATH = getFilesDir().getAbsolutePath();
-        //convoID = getIntent().getExtras().getString("convoID");
+        DataManager.getInstance().setOnMessageSentListener(this);
+        DataManager.getInstance().setGetNewMessagesListener(this);
+
+        convoID = getIntent().getExtras().getString("convoID");
+        FILE_PATH = getFilesDir().getAbsolutePath() + "/" + convoID;
+        File dir = new File(FILE_PATH);
+        if (!dir.exists())
+            dir.mkdir();
+
+        messages = DataManager.getInstance().loadPreviousMessagesInConvo(FILE_PATH);
+                                DataManager.getInstance().getNewMessagesInConvo(convoID);
+//        pollForNewMessages();
     }
 
     @Override
@@ -73,6 +84,78 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         super.onResume();
     }
 
+    private void pollForNewMessages()
+    {
+//        Timer timer = new Timer();
+//        TimerTask task = new TimerTask()
+//        {
+//            @Override
+//            public void run()
+//            {
+//                AsyncTask<Void, Void, Void> pollTask = new AsyncTask<Void, Void, Void>()
+//                {
+//                    @Override
+//                    protected Void doInBackground(Void... voids)
+//                    {
+//                        DataManager.getInstance().getNewMessagesInConvo(convoID);
+//                        return null;
+//                    }
+//                }.execute();
+//            }
+//        };
+//        timer.schedule(task, 0, 2000);
+    }
+
+    @Override
+    public void onMessageSent(Networking.GenericResponse response)
+    {
+        if (response.success)
+        {
+            Toast.makeText(getApplicationContext(), "Sent successfully", Toast.LENGTH_SHORT).show();
+            Message msg = new Message("" + messages.size());
+            messages.add(msg);
+            listView.invalidateViews();
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "Sent unsuccessfully", Toast.LENGTH_SHORT).show();
+            File file = new File(FILE_PATH + "/" + messages.size());
+            file.delete();
+        }
+    }
+
+    @Override
+    public void onGetNewMessages(Networking.ConversationMessagesResponse conversationMessagesResponse)
+    {
+        for (int i = 0; i < conversationMessagesResponse.newMessages.length; i++)
+        {
+            String message = conversationMessagesResponse.newMessages[i].message;
+            byte[] clip = DataManager.getInstance().stringToMessageBytes(message);
+            if (clip != null)
+                Log.i("Get messages", "String could not be converted to byte array");
+            writeBytesToFile(clip);
+        }
+        listView.invalidateViews();
+    }
+
+    private void writeBytesToFile(byte[] clip)
+    {
+        try
+        {
+            File file = new File(FILE_PATH + "/" + messages.size());
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            BufferedOutputStream out = new BufferedOutputStream(fileOutputStream);
+            out.write(clip);
+            out.flush();
+            out.close();
+            messages.add(new Message("" + messages.size()));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void backPressed(View view)
     {
         super.onBackPressed();
@@ -80,26 +163,32 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
 
     public void soundboardPressed(View view)
     {
-        if (messages.size() == 0)
-            return;
-        byte[] msg1 = null;
+        DataManager.getInstance().getNewMessagesInConvo(convoID);
 
+
+    }
+
+    private void sendMessage()
+    {
+        byte[] msg = null;
         try
         {
-            File file = new File(FILE_PATH + "/0");
+            File file = new File(FILE_PATH + "/" + messages.size());
             long size = file.length();
             FileInputStream fileInputStream = new FileInputStream(file.getPath());
             DataInputStream in = new DataInputStream(fileInputStream);
-            msg1 = new byte[(int)size];
-            in.readFully(msg1, 0, (int)size);
-            Log.i("File read", "File Size: " + msg1.length);
-
+            msg = new byte[(int) size];
+            in.readFully(msg, 0, (int) size);
+            String message = DataManager.getInstance().messageBytesToString(msg);
+            if (message == null)
+                throw new Exception("Message could not be converted from bytes to string");
+            Toast.makeText(getApplicationContext(), "Sending to server: " + size + " bytes", Toast.LENGTH_SHORT).show();
+            DataManager.getInstance().sendMessageToConvo(convoID, message);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -139,11 +228,8 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
                         audioRecorder.stop();
                         audioRecorder.release();
                         audioRecorder = null;
-                        Message msg = new Message("" + messages.size());
-                        messages.add(msg);
-                        listView.invalidateViews();
 
-                        Toast.makeText(getApplicationContext(), "Recording finished", Toast.LENGTH_SHORT).show();
+                        sendMessage();
 
                     }
 
@@ -267,4 +353,5 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
             e.printStackTrace();
         }
     }
+
 }

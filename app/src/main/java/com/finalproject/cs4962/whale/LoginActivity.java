@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,DataManager.OnAccountCreatedListener
 {
 
     /**
@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        DataManager.getInstance().setOnAccountCreatedListener(this);
         setContentView(R.layout.activity_login);
         // Set up the login form.
         username = (AutoCompleteTextView) findViewById(R.id.username);
@@ -85,12 +86,49 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view)
             {
-                attemptLogin();
+                //attemptLogin();
+                String name = username.getText().toString();
+                // Check for a valid email address.
+                if (TextUtils.isEmpty(name))
+                {
+                    username.setError(getString(R.string.error_field_required));
+                    username.requestFocus();
+                }
+                else
+                {
+                    showProgress(true);
+                    DataManager.getInstance().createAccount(name);
+                }
             }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    @Override
+    public void onAccountCreated()
+    {
+        showProgress(false);
+        //String id = DataManager.getInstance().getUserID();
+        String id = "testing purposes";
+        if (id.equals("FAILED"))
+        {
+            username.setError("Failed to connect to server.");
+            username.requestFocus();
+        }
+        else if (id.equals("TAKEN"))
+        {
+            username.setError("Username is already taken.");
+            username.requestFocus();
+        }
+        else
+        {
+            finish();
+            Intent toMainActivityIntent = new Intent();
+            toMainActivityIntent.setClass(LoginActivity.this, MainActivity.class);
+            startActivity(toMainActivityIntent);
+        }
     }
 
     private void populateAutoComplete()
@@ -263,7 +301,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         username.setAdapter(adapter);
     }
-
 
     private interface ProfileQuery
     {

@@ -130,7 +130,7 @@ public class Networking
         public String userID;
     }
 
-    public static final String SERVER_IP = "192.168.1.22";
+    public static final String SERVER_IP = "128.110.76.204";
     public static final int SERVER_PORT = 2000;
 
     public static CreateAccountResponse createNewAccount(String username)
@@ -581,7 +581,7 @@ public class Networking
 
             String others = "[";
             for(String id : otherIDs)
-                others = others + id + ",";
+                others = others + "\"" +id + "\",";
             /* Trim the comma */
             if (others.length() > 1)
                 others = others.substring(0, others.length() - 1);

@@ -1,10 +1,12 @@
 package com.finalproject.cs4962.whale;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,13 +14,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class ConversationFragment extends Fragment implements ListAdapter, AdapterView.OnItemClickListener
+
+public class ConversationFragment extends Fragment implements ListAdapter, AdapterView.OnItemClickListener, View.OnClickListener, DataManager.GetConvoListListener, DataManager.OnConvoListChangedListener
 {
 
     public static ConversationFragment newInstance()
@@ -33,6 +39,10 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        DataManager.getInstance().refreshConvoList();
+        DataManager.getInstance().setGetConvoListListener(this);
+        DataManager.getInstance().setOnConvoListChangedListener(this);
+
     }
 
     @Override
@@ -52,6 +62,38 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
         listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
         int height = (int) (2 * getResources().getDisplayMetrics().density);
         listView.setDividerHeight(height);
+
+        FloatingActionButton addButton = (FloatingActionButton)getActivity().findViewById(R.id.add_convo_button);
+        addButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view)
+    {
+//        List<String> ids = new ArrayList<>();
+//        ids.add("04da78cd-e990-4405-a20c-a5754b796b22");
+//        DataManager.getInstance().createConversation(ids);
+        DataManager.getInstance().refreshConvoList();
+    }
+
+
+    @Override
+    public void onGetConvoList()
+    {
+        ListView listView = (ListView) getActivity().findViewById(R.id.convo_list_view);
+        listView.invalidateViews();
+    }
+
+    @Override
+    public void onConvoCreated(String convoID)
+    {
+
+    }
+
+    @Override
+    public void onConvoDeleted(Networking.GenericResponse response)
+    {
+
     }
 
     @Override
@@ -63,7 +105,7 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
     @Override
     public int getCount()
     {
-        return 9;
+        return DataManager.getInstance().getConversationCount();
     }
 
     @Override
@@ -75,7 +117,7 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
     @Override
     public Object getItem(int i)
     {
-        return conversations[i];
+        return DataManager.getInstance().getConversationAt(i);
     }
 
     @Override
@@ -99,7 +141,7 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
     @Override
     public View getView(int i, View view, ViewGroup viewGroup)
     {
-        //Networking.Conversation convo = (Networking.Conversation) getItem(i);
+        Conversation convo = (Conversation) getItem(i);
         LinearLayout userLayout = new LinearLayout(getActivity());
         userLayout.setOrientation(LinearLayout.VERTICAL);
 
@@ -107,7 +149,7 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
         profile.setImageResource(R.drawable.whale);
 
         TextView username = new TextView(getActivity());
-        username.setText("Charles Khong");
+        username.setText(convo.users.get(0).name);
         username.setLines(3);
         username.setGravity(Gravity.CENTER);
         username.setTextColor(getResources().getColor(R.color.textColorPrimary));
@@ -153,12 +195,13 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
     {
-        //Networking.Conversation convo = (Networking.Conversation) getItem(i);
+        Conversation convo = (Conversation) getItem(i);
         /* Request for that conversation */
         Intent toConversationIntent = new Intent();
         toConversationIntent.setClass(getActivity(), ConversationActivity.class);
-        //toConversationIntent.putExtra("convoID", "123");
+        toConversationIntent.putExtra("convoID", convo.convoID);
         startActivity(toConversationIntent);
 
     }
+
 }

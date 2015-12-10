@@ -7,6 +7,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,7 +56,7 @@ public class DataManager
 
     public interface GetNewMessagesListener
     {
-        void onGetNewMessages();
+        void onGetNewMessages(Networking.ConversationMessagesResponse conversationMessagesResponse);
     }
 
     public interface GetGlobalSoundboardListener
@@ -133,6 +134,16 @@ public class DataManager
         return userID;
     }
 
+    public int getConversationCount()
+    {
+        return conversationList.size();
+    }
+
+    public Conversation getConversationAt(int index)
+    {
+        return conversationList.get(index);
+    }
+
     public void setOnAccountCreatedListener(OnAccountCreatedListener onAccountCreatedListener)
     {
         this.onAccountCreatedListener = onAccountCreatedListener;
@@ -208,6 +219,20 @@ public class DataManager
         this.onUserFoundListener = onUserFoundListener;
     }
 
+    public List<Message> loadPreviousMessagesInConvo(String path)
+    {
+        int counter = 0;
+        List<Message> messages = new ArrayList<>();
+        File file = new File(path + "/" + counter);
+        while (file.exists())
+        {
+            messages.add(new Message(""+counter));
+            counter++;
+            file = new File(path + "/" + counter);
+        }
+        return messages;
+    }
+
     public void createAccount(String username)
     {
         AsyncTask<String, Integer, Networking.CreateAccountResponse> createTask = new AsyncTask<String, Integer, Networking.CreateAccountResponse>()
@@ -224,12 +249,12 @@ public class DataManager
                 super.onPostExecute(createAccountResponse);
 
                 if (createAccountResponse == null)
-                    return;
-                /* Username was taken */
-                if (createAccountResponse.userID.equals("TAKEN"))
-                    return;
-
-                userID = createAccountResponse.userID;
+                {
+                    userID = "FAILED";
+                }
+                else
+                    /* Username was taken */
+                    userID = createAccountResponse.userID;
 
                 if (onAccountCreatedListener != null)
                     onAccountCreatedListener.onAccountCreated();
@@ -404,9 +429,12 @@ public class DataManager
                 if (conversationListResponse == null)
                     return;
 
+                conversationList = new ArrayList<>();
+
                 for (Networking.Conversation conv : conversationListResponse.conversations)
                 {
                     Networking.User[] users = conv.users;
+
                     String lm = conv.lastMessage;
                     String ldt = conv.lastDateTime;
                     String convoID = conv.convoID;
@@ -444,7 +472,7 @@ public class DataManager
                     the messages must be converted and saved */
 
                 if (getNewMessagesListener != null)
-                    getNewMessagesListener.onGetNewMessages();
+                    getNewMessagesListener.onGetNewMessages(conversationMessagesResponse);
             }
         };
 
