@@ -112,14 +112,15 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         if (response.success)
         {
             Toast.makeText(getApplicationContext(), "Sent successfully", Toast.LENGTH_SHORT).show();
-            Message msg = new Message("" + messages.size());
+            String id = DataManager.getInstance().getUserID();
+            Message msg = new Message("" + messages.size(), id);
             messages.add(msg);
             listView.invalidateViews();
         }
         else
         {
             Toast.makeText(getApplicationContext(), "Sent unsuccessfully", Toast.LENGTH_SHORT).show();
-            File file = new File(FILE_PATH + "/" + messages.size());
+            File file = new File(FILE_PATH + "/" + DataManager.getInstance().getUserID() + messages.size());
             file.delete();
         }
     }
@@ -130,25 +131,26 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         for (int i = 0; i < conversationMessagesResponse.newMessages.length; i++)
         {
             String message = conversationMessagesResponse.newMessages[i].message;
+            String senderID = conversationMessagesResponse.newMessages[i].senderID;
             byte[] clip = DataManager.getInstance().stringToMessageBytes(message);
             if (clip != null)
                 Log.i("Get messages", "String could not be converted to byte array");
-            writeBytesToFile(clip);
+            writeBytesToFile(clip, senderID);
         }
         listView.invalidateViews();
     }
 
-    private void writeBytesToFile(byte[] clip)
+    private void writeBytesToFile(byte[] clip, String senderID)
     {
         try
         {
-            File file = new File(FILE_PATH + "/" + messages.size());
+            File file = new File(FILE_PATH + "/" + senderID + messages.size());
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             BufferedOutputStream out = new BufferedOutputStream(fileOutputStream);
             out.write(clip);
             out.flush();
             out.close();
-            messages.add(new Message("" + messages.size()));
+            messages.add(new Message("" + messages.size(), senderID));
         }
         catch (Exception e)
         {
@@ -164,8 +166,6 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     public void soundboardPressed(View view)
     {
         DataManager.getInstance().getNewMessagesInConvo(convoID);
-
-
     }
 
     private void sendMessage()
@@ -173,7 +173,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         byte[] msg = null;
         try
         {
-            File file = new File(FILE_PATH + "/" + messages.size());
+            File file = new File(FILE_PATH + "/" + DataManager.getInstance().getUserID() + messages.size());
             long size = file.length();
             FileInputStream fileInputStream = new FileInputStream(file.getPath());
             DataInputStream in = new DataInputStream(fileInputStream);
@@ -206,7 +206,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
                         audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                         audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
                         audioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-                        String path = FILE_PATH + "/" + messages.size();
+                        String path = FILE_PATH + "/" + DataManager.getInstance().getUserID() + messages.size();
                         audioRecorder.setOutputFile(path);
 
                         audioRecorder.prepare();
@@ -284,12 +284,13 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     @Override
     public View getView(int i, View view, ViewGroup viewGroup)
     {
+        Message message = (Message) getItem(i);
         LinearLayout rootLayout = new LinearLayout(this);
         CircularImageView profile = new CircularImageView(this);
         profile.setImageResource(R.drawable.whale);
         WaveView msg = new WaveView(this, false);
         int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
-        if (i % 2 == 0)
+        if (!message.senderID.equals(DataManager.getInstance().getUserID()))
         {
             rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
             rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
@@ -331,7 +332,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
     {
         Message msg = (Message) getItem(i);
-        String path = FILE_PATH + "/" + msg.messageID;
+        String path = FILE_PATH + "/" + msg.senderID +msg.messageID;
         MediaPlayer player = new MediaPlayer();
         try
         {

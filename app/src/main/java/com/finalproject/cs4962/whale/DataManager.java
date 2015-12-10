@@ -221,14 +221,31 @@ public class DataManager
 
     public List<Message> loadPreviousMessagesInConvo(String path)
     {
-        int counter = 0;
-        List<Message> messages = new ArrayList<>();
-        File file = new File(path + "/" + counter);
-        while (file.exists())
+//        int counter = 0;
+//        String id = "";
+//
+//        List<Message> messages = new ArrayList<>();
+//        File file = new File(path + "/" + counter);
+//        while (file.exists())
+//        {
+//            messages.add(new Message(""+counter,));
+//            counter++;
+//            file = new File(path + "/" + counter);
+//        }
+//        return messages;
+
+        File[] files = new File(path + "/").listFiles();
+                List<Message> messages = new ArrayList<>();
+
+        for (File f : files)
         {
-            messages.add(new Message(""+counter));
-            counter++;
-            file = new File(path + "/" + counter);
+            if (f.exists())
+            {
+                String id = f.getName().substring(0, 36);
+                int count = Integer.parseInt(f.getName().substring(36, f.getName().length()));
+                messages.add(new Message("" + count, id));
+                Log.i("file", "id");
+            }
         }
         return messages;
     }

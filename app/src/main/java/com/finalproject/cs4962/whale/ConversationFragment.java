@@ -142,8 +142,9 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
     public View getView(int i, View view, ViewGroup viewGroup)
     {
         Conversation convo = (Conversation) getItem(i);
-        LinearLayout userLayout = new LinearLayout(getActivity());
-        userLayout.setOrientation(LinearLayout.VERTICAL);
+
+        LinearLayout rootLayout = new LinearLayout(getActivity());
+        rootLayout.setOrientation(LinearLayout.VERTICAL);
 
         CircularImageView profile = new CircularImageView(getActivity());
         profile.setImageResource(R.drawable.whale);
@@ -153,17 +154,16 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
         username.setLines(3);
         username.setGravity(Gravity.CENTER);
         username.setTextColor(getResources().getColor(R.color.textColorPrimary));
-        userLayout.addView(profile, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 3));
-        userLayout.addView(username, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 2));
 
-
-        LinearLayout rootLayout = new LinearLayout(getActivity());
+        LinearLayout messageLayout = new LinearLayout(getActivity());
         WaveView msg = new WaveView(getActivity(), false);
         int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
-        rootLayout.addView(userLayout, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
-        rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
+        rootLayout.addView(username, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 2));
+        messageLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
+        messageLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 12));
+        rootLayout.addView(messageLayout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 3));
 
-        rootLayout.setPadding(padding, 2*padding, padding, 2*padding);
+        rootLayout.setPadding(padding, padding, padding, padding);
         return rootLayout;
     }
 

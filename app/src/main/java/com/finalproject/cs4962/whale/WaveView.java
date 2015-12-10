@@ -227,7 +227,8 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
         rectPaint.setStrokeWidth(0.025f * getHeight());
         rectPaint.setColor(getResources().getColor(R.color.colorAccent));
 
-        canvas.drawRoundRect(rounded, 7 * pad, 7 * pad, rectPaint);
+        int rd = (int) (waveRect.height() * 0.1f);
+        canvas.drawRoundRect(rounded, 7 * rd, 7 * rd, rectPaint);
 
         canvas.drawPath(wavePath, wavePaint);
         canvas.drawPath(playPath, playPaint);
