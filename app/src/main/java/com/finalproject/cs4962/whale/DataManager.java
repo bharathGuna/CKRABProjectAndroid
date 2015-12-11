@@ -46,7 +46,7 @@ public class DataManager
 
     public interface GetOtherProfileListener
     {
-        void onGetOtherProfile(Networking.OtherProfileResponse profile);
+        void onGetOtherProfile(OtherProfileInfo profile);
     }
 
     public interface GetConvoListListener
@@ -361,7 +361,7 @@ public class DataManager
                     if (ppic == null)
                     {
                         Log.i("String to Bitmap", "Error occurred converting string to bitmap");
-                        return;
+                    //    return;
                     }
 
                     Friend frnd = new Friend(name, id, ppic, online);
@@ -418,10 +418,38 @@ public class DataManager
             {
                 super.onPostExecute(otherProfileResponse);
 
+
+                List<Friend> friends = new ArrayList<>();
+                for(Networking.Friend friend : otherProfileResponse.friends)
+                {
+                    String name = friend.name;
+                    String id = friend.userID;
+                    String pic = friend.profilePic;
+                    Bitmap ppic = stringToBitmap(pic);
+                    boolean online = friend.online;
+
+                    if (ppic == null)
+                    {
+                        Log.i("String to Bitmap", "Error occurred converting string to bitmap");
+                        //    return;
+                    }
+
+                    Friend frnd = new Friend(name, id, ppic, online);
+                    friends.add(frnd);
+                }
+
+                String name = otherProfileResponse.name;
+                Bitmap profilePic = stringToBitmap(otherProfileResponse.profilePic);
+                int messages = otherProfileResponse.messages;
+                String friended = otherProfileResponse.friended;
+                String about = otherProfileResponse.about;
+                List<Friend> friend = friends;
+
+                OtherProfileInfo otherProfileInfo = new OtherProfileInfo(name,profilePic,messages,friended,about,friend);
                 if (otherProfileResponse == null)
                     return;
                 if (getOtherProfileListener != null)
-                    getOtherProfileListener.onGetOtherProfile(otherProfileResponse);
+                    getOtherProfileListener.onGetOtherProfile(otherProfileInfo);
             }
         };
 

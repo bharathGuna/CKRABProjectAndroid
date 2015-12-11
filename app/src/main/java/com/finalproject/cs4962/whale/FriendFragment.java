@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FriendFragment extends Fragment implements ListAdapter
+public class FriendFragment extends Fragment implements ListAdapter, DataManager.GetFriendsListener
 {
     private  GridView gridView;
     private List<Friend> friends;
@@ -35,13 +36,10 @@ public class FriendFragment extends Fragment implements ListAdapter
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        Bitmap image = BitmapFactory.decodeResource(getResources(),R.drawable.whale);
+        DataManager manager = DataManager.getInstance();
+        manager.setGetFriendsListener(this);
+        manager.getFriendsList(manager.getUserID());
         friends = new ArrayList<>();
-        for(int i = 0; i < 9; i ++)
-        {
-            Friend f = new Friend(""+i, ""+i, image, true );
-            friends.add(f);
-        }
     }
 
     @Override
@@ -56,14 +54,9 @@ public class FriendFragment extends Fragment implements ListAdapter
     public void onStart()
     {
         super.onStart();
-
         gridView = (GridView) getActivity().findViewById(R.id.friend_list_grid);
-        int spacing = (int) (getResources().getDisplayMetrics().density * 5);
-        gridView.setHorizontalSpacing(spacing);
-        gridView.setVerticalSpacing(spacing);
         gridView.setAdapter(this);
         gridView.setOnItemClickListener(getOnItemClickListener());
-
     }
 
     private AdapterView.OnItemClickListener getOnItemClickListener()
@@ -73,8 +66,11 @@ public class FriendFragment extends Fragment implements ListAdapter
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
+                Friend friend = (Friend)getItem(i);
                 Intent toProfile = new Intent();
                 toProfile.setClass(getActivity(), ProfileActivity.class);
+                toProfile.putExtra(ProfileActivity.USERID, friend.userID);
+                //send the activity person's information
                 startActivity(toProfile);
             }
         };
@@ -139,7 +135,7 @@ public class FriendFragment extends Fragment implements ListAdapter
         layout.setOrientation(LinearLayout.VERTICAL);
         CircularImageView imageView;
         TextView name;
-        int size = (int) (getResources().getDisplayMetrics().widthPixels/gridView.getNumColumns() );
+        int size = (int) (getResources().getDisplayMetrics().widthPixels/gridView.getNumColumns() * .8f );
         imageView = new CircularImageView(getContext());
         imageView.setImageBitmap(friend.profilePic);
         imageView.setName(friend.name);
@@ -175,4 +171,9 @@ public class FriendFragment extends Fragment implements ListAdapter
     }
 
 
+    @Override
+    public void onGetFriends(List<Friend> friends)
+    {
+        this.friends = friends;
+    }
 }

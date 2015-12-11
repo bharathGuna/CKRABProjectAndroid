@@ -10,7 +10,7 @@
         android:orientation="horizontal">
 
         <com.finalproject.cs4962.whale.CircularImageView
-            android:id="@+id/profilePic"
+            android:id="@+id/profilePic_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
@@ -21,7 +21,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/name"
+                android:id="@+id/name_activity"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
@@ -32,22 +32,22 @@
                 android:textSize="40sp"/>
 
             <TextView
-                android:id="@+id/totalMessages"
+                android:id="@+id/totalMessages_activity"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="Message Total"
+                android:text="Message Total :"
                 android:textColor="@color/textColorPrimary"
                 android:textSize="20sp"/>
 
             <TextView
-                android:id="@+id/friended"
+                android:id="@+id/friended_activity"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="Friended"
+                android:text="Friended :"
                 android:textColor="@color/textColorPrimary"
                 android:textSize="20sp"/>
 
@@ -63,7 +63,7 @@
         android:orientation="horizontal">
 
         <com.finalproject.cs4962.whale.DrawButton
-            android:id="@+id/addFriend"
+            android:id="@+id/addFriend_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -71,22 +71,23 @@
             android:layout_marginRight="5dp"/>
 
         <com.finalproject.cs4962.whale.DrawButton
-            android:id="@+id/deleteFriend"
+            android:id="@+id/deleteFriend_activity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/addFriend"/>
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"/>
 
     </RelativeLayout>
 
     <android.support.design.widget.TabLayout
-        android:id="@+id/profileTabs"
+        android:id="@+id/profileTabs_activity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
 
     <android.support.v4.view.ViewPager
-        android:id="@+id/profileViewpager"
+        android:id="@+id/profileViewpager_activity"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"/>
