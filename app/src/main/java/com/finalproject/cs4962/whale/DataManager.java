@@ -619,8 +619,6 @@ public class DataManager
 
                 if (createConversationResponse == null)
                     return;
-                if (!createConversationResponse.success)
-                    return;
 
                 /* Refresh convo list */
                 refreshConvoList();

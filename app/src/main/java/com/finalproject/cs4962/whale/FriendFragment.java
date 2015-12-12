@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FriendFragment extends Fragment implements ListAdapter, DataManager.GetFriendsListener
+public class FriendFragment extends Fragment implements ListAdapter, DataManager.GetFriendsListener, SwipeRefreshLayout.OnRefreshListener
 {
     private  GridView gridView;
     private List<Friend> friends;
@@ -57,6 +58,9 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         gridView = (GridView) getActivity().findViewById(R.id.friend_list_grid);
         gridView.setAdapter(this);
         gridView.setOnItemClickListener(getOnItemClickListener());
+
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.friend_list_refresh);
+        refreshLayout.setOnRefreshListener(this);
     }
 
     private AdapterView.OnItemClickListener getOnItemClickListener()
@@ -175,5 +179,14 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
     public void onGetFriends(List<Friend> friends)
     {
         this.friends = friends;
+        gridView.invalidateViews();
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.friend_list_refresh);
+        refreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onRefresh()
+    {
+        DataManager.getInstance().getFriendsList(DataManager.getInstance().getUserID());
     }
 }

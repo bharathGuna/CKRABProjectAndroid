@@ -37,6 +37,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     private MediaRecorder audioRecorder;
     private List<Message> messages = new ArrayList<>();
     private String convoID = "";
+    private String[] names = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,8 +53,14 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         int[] colors = {0, getResources().getColor(R.color.textColorPrimary), 0}; // red for the example
         separator.setBackground(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
 
-        TextView name = (TextView)findViewById(R.id.title_text);
-        name.setText("Charles Khong");
+        names = getIntent().getExtras().getStringArray("names");
+        String title = "";
+        for (String n : names)
+            title += n + ", ";
+        title = title.substring(0, title.length() - 2);
+        TextView name = (TextView) findViewById(R.id.title_text);
+        name.setText(title);
+        name.setSingleLine();
 
         ImageButton recordButton = (ImageButton)findViewById(R.id.record_button);
         recordButton.setOnTouchListener(this);
@@ -62,6 +69,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         DataManager.getInstance().setGetNewMessagesListener(this);
 
         convoID = getIntent().getExtras().getString("convoID");
+
         FILE_PATH = getFilesDir().getAbsolutePath() + "/" + convoID;
         File dir = new File(FILE_PATH);
         if (!dir.exists())

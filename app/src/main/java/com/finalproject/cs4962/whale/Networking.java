@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,14 +131,16 @@ public class Networking
         public String userID;
     }
 
-    public static final String SERVER_IP = "128.110.76.204";
+    public static final String SERVER_IP = "155.99.162.230";
     public static final int SERVER_PORT = 2000;
 
     public static CreateAccountResponse createNewAccount(String username)
     {
         try
         {
-            Socket connection = new Socket(SERVER_IP, SERVER_PORT);
+            //Socket connection = new Socket(SERVER_IP, SERVER_PORT);
+            Socket connection = new Socket();
+            connection.connect(new InetSocketAddress(SERVER_IP, SERVER_PORT), 5000);
             DataInputStream in = new DataInputStream(connection.getInputStream());
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
 
