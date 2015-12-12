@@ -102,6 +102,7 @@ public class DataManager
     }
 
     private String userID;
+    private String username;
     /* TODO: Convert to usable data objects */
     private List<Conversation> conversationList;
     private List<Networking.Soundbite> globalSoundboard;
@@ -133,6 +134,8 @@ public class DataManager
     {
         return userID;
     }
+
+    public String getUsername() {return username;}
 
     public int getConversationCount()
     {
@@ -250,8 +253,9 @@ public class DataManager
         return messages;
     }
 
-    public void createAccount(String username)
+    public void createAccount( String _username)
     {
+        username = _username;
         AsyncTask<String, Integer, Networking.CreateAccountResponse> createTask = new AsyncTask<String, Integer, Networking.CreateAccountResponse>()
         {
             @Override
@@ -268,6 +272,7 @@ public class DataManager
                 if (createAccountResponse == null)
                 {
                     userID = "FAILED";
+                    username = "";
                 }
                 else
                     /* Username was taken */

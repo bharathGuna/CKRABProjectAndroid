@@ -110,8 +110,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public void onAccountCreated()
     {
         showProgress(false);
-        //String id = DataManager.getInstance().getUserID();
-        String id = "testing purposes";
+        String id = DataManager.getInstance().getUserID();
+        //String id = "testing purposes";
         if (id.equals("FAILED"))
         {
             username.setError("Failed to connect to server.");

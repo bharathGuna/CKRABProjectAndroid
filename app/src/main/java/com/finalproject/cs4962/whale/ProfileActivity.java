@@ -1,15 +1,22 @@
 package com.finalproject.cs4962.whale;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,9 +29,10 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ProfileActivity extends AppCompatActivity implements DataManager.GetOtherProfileListener, ListAdapter
+public class ProfileActivity extends AppCompatActivity implements DataManager.GetOtherProfileListener
 {
 
     public static String USERID = "USERID";
@@ -119,94 +127,58 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
 
     }
 
-    @Override
-    public boolean areAllItemsEnabled()
+    private View.OnClickListener goToProfile()
     {
-        return true;
+        View.OnClickListener listener = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+
+            }
+        };
+
+        return listener;
     }
 
-    @Override
-    public boolean isEnabled(int i)
-    {
-        return true;
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(DescriptionFragment.newInstance(), "About Me");
+        adapter.addFragment(ProfileFriendFragment.newInstance(), "Friends");
+        viewPager.setAdapter(adapter);
     }
 
-    @Override
-    public void registerDataSetObserver(DataSetObserver dataSetObserver)
-    {
 
+    class ViewPagerAdapter extends FragmentPagerAdapter
+    {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentNames = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String name) {
+            mFragmentList.add(fragment);
+            mFragmentNames.add(name);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position)
+        {
+            return mFragmentNames.get(position);
+        }
     }
 
-    @Override
-    public void unregisterDataSetObserver(DataSetObserver dataSetObserver)
-    {
-
-    }
-
-    @Override
-    public int getCount()
-    {
-        return friends.size(); // Data manager .count
-    }
-
-    @Override
-    public Object getItem(int i)
-    {
-        return friends.get(i); // Object associated with that position
-    }
-
-    @Override
-    public long getItemId(int i)
-    {
-        return 0; // Conversion from grid view position to data position
-    }
-
-    @Override
-    public boolean hasStableIds()
-    {
-        return true;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup)
-    {
-        Friend friend = (Friend)getItem(i);
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        CircularImageView imageView;
-        TextView name;
-      //  int size = (int) (getResources().getDisplayMetrics().widthPixels/gridView.getNumColumns() * .8f );
-        imageView = new CircularImageView(this);
-        imageView.setImageBitmap(friend.profilePic);
-        imageView.setName(friend.name);
-        name = new TextView(this);
-        name.setText(friend.name);
-        name.setLines(3);
-        name.setTextSize(getResources().getDisplayMetrics().density * 5f);
-        name.setGravity(Gravity.CENTER);
-        name.setTextColor(Color.WHITE);
-        //layout.addView(imageView, new LinearLayout.LayoutParams(size,size,3));
-        layout.addView(name, new  LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1));
-
-
-        return layout;
-    }
-
-    @Override
-    public int getItemViewType(int i)
-    {
-        return 0;
-    }
-
-    @Override
-    public int getViewTypeCount()
-    {
-        return 1;
-    }
-
-    @Override
-    public boolean isEmpty()
-    {
-        return getCount() > 0;
-    }
 }

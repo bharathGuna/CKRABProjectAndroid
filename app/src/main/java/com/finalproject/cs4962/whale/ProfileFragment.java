@@ -2,6 +2,7 @@ package com.finalproject.cs4962.whale;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -33,29 +34,20 @@ import java.util.List;
  */
 //TODO: The issue with the tabs is that the tablayout shares the same memory space as the friends list so
     //need to create a new tablayout or xml file.
-public class ProfileFragment extends Fragment
+public class ProfileFragment extends Fragment implements DataManager.GetUserProfileListener
 {
 
     //components of the fragment
     CircularImageView profilePic;
-    TextView name, totalMessage, friendDate;
-    DrawButton delete, add;
+    TextView name, totalMessage;
     TabLayout tabLayout;
     ViewPager viewPager;
-    String userid;
-    boolean mode;
 
-    final static String USERID = "USERID";
-    final static String MODE = "MODE";
     private static final int SELECT_SINGLE_PICTURE = 101;
     public static final String IMAGE_TYPE = "image/*";
-    public static ProfileFragment newInstance(String id, boolean mode)
+    public static ProfileFragment newInstance()
     {
         ProfileFragment fragment = new ProfileFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(USERID,id);
-        bundle.putBoolean(MODE, mode);
-        fragment.setArguments(bundle);
         return  fragment;
     }
 
@@ -64,16 +56,9 @@ public class ProfileFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         //unpacking the bundle.
-        Bundle temp = getArguments();
-        if(temp != null && temp.containsKey(MODE) && temp.containsKey(USERID))
-        {
-            //asking manager for my id and check if id is the same
-            //if same get the picture that is cached in memory
-        }
-        else
-        {
-            //ask the server for information
-        }
+        DataManager dm = DataManager.getInstance();
+        dm.setGetUserProfileListener(this);
+        dm.getUserProfile();
 
     }
 
@@ -85,9 +70,6 @@ public class ProfileFragment extends Fragment
         profilePic = (CircularImageView)layout.findViewById(R.id.profilePic);
         name = (TextView) layout.findViewById(R.id.name);
         totalMessage = (TextView) layout.findViewById(R.id.totalMessages);
-        friendDate = (TextView) layout.findViewById(R.id.friended);
-        add = (DrawButton)layout.findViewById(R.id.addFriend);
-        delete = (DrawButton)layout.findViewById(R.id.deleteFriend);
         tabLayout = (TabLayout) layout.findViewById(R.id.profileTabs);
         viewPager = (ViewPager) layout.findViewById(R.id.profileViewpager);
 
@@ -106,56 +88,6 @@ public class ProfileFragment extends Fragment
 
         profilePic.setOnClickListener(selectPicture());
         return layout;
-    }
-
-    private DrawButton.DrawSymbol drawDeleteSymbol()
-    {
-        DrawButton.DrawSymbol drawSymbol = new DrawButton.DrawSymbol()
-        {
-            @Override
-            public void draw(Canvas canvas)
-            {
-                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                paint.setColor(Color.WHITE);
-                int width = canvas.getWidth();
-                int height = canvas.getHeight();
-
-                float strokeWidth = width * .1f;
-                paint.setStrokeWidth(strokeWidth);
-                paint.setStyle(Paint.Style.STROKE);
-
-                float padding = width * .1f;
-                canvas.drawLine(padding, padding, width-padding, height-padding, paint);
-                canvas.drawLine(padding, height - padding, width-padding, padding,paint);
-            }
-        };
-
-        return drawSymbol;
-    }
-
-    private DrawButton.DrawSymbol drawAddSymbol()
-    {
-        DrawButton.DrawSymbol drawSymbol = new DrawButton.DrawSymbol()
-        {
-            @Override
-            public void draw(Canvas canvas)
-            {
-                Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                paint.setColor(Color.WHITE);
-                int width = canvas.getWidth();
-                int height = canvas.getHeight();
-
-                float strokeWidth = width * .1f;
-                paint.setStrokeWidth(strokeWidth);
-                paint.setStyle(Paint.Style.STROKE);
-
-                float padding = width * .1f;
-                canvas.drawLine(width / 2, padding, width / 2, height - padding, paint);
-                canvas.drawLine(padding, height / 2, width - padding, height / 2, paint);
-            }
-        };
-
-        return drawSymbol;
     }
 
 
@@ -201,8 +133,26 @@ public class ProfileFragment extends Fragment
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
         adapter.addFragment(DescriptionFragment.newInstance(), "About Me");
-        adapter.addFragment(ProfileFriendFragment.newInstance(), "Friends");
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onGetProfile(Networking.PersonalProfileResponse profile)
+    {
+        //need to set the profile with the correct information
+
+        name.setText(profile.name);
+        totalMessage.setText(totalMessage.getText() +" "+ profile.messages);
+        //setting the about text
+        ViewPagerAdapter adapter = (ViewPagerAdapter)viewPager.getAdapter();
+        DescriptionFragment fragment = (DescriptionFragment)adapter.getItem(0);
+        fragment.setAboutText(profile.about);
+
+        Bitmap bm = DataManager.getInstance().stringToBitmap(profile.profilePic);
+        profilePic.setImageBitmap(bm);
+        profilePic.setName(profile.name);
+
+
     }
 
 
