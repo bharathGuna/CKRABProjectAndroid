@@ -1,5 +1,6 @@
 package com.finalproject.cs4962.whale;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -105,6 +106,7 @@ public class DataManager
 
     private String userID;
     private String username;
+
     /* TODO: Convert to usable data objects */
     private List<Conversation> conversationList;
     private List<String> personalBoard;

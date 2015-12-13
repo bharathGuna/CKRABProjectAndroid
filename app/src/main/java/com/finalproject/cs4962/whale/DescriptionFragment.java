@@ -1,5 +1,6 @@
 package com.finalproject.cs4962.whale;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
@@ -17,11 +18,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by Khong on 12/5/15.
  */
-public class DescriptionFragment extends Fragment implements View.OnClickListener
+public class DescriptionFragment extends Fragment implements View.OnClickListener, DataManager.OnProfileUpdatedListener
 {
     private TextView text;
     FloatingActionButton button;
@@ -35,6 +37,7 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        DataManager.getInstance().setOnProfileUpdatedListener(this);
     }
 
 
@@ -54,13 +57,13 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
 
     }
 
-    @Override
+   /* @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
         outState.putString(ABOUTME, text.getText().toString());
     }
-
+*/
 
     @Override
     public void onClick(View view)
@@ -68,6 +71,33 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
         Intent intent = new Intent();
         intent.setClass(getActivity(), AboutMeActivity.class);
         intent.putExtra(AboutMeActivity.CURRENTTEXT, text.getText().toString());
-        startActivityForResult(intent,AboutMeActivity.EDITTEXT);
+        startActivityForResult(intent,1);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1)
+        {
+            if(resultCode == Activity.RESULT_OK)
+            {
+                String updatedText = (String)data.getExtras().get(AboutMeActivity.NEWTEXT);
+                setAboutText(updatedText);
+                DataManager.getInstance().updateUserProfile("",updatedText);
+            }
+            else if(resultCode == Activity.RESULT_CANCELED)
+            {
+                String updatedText = (String)data.getExtras().get(AboutMeActivity.CURRENTTEXT);
+                setAboutText(updatedText);
+            }
+        }
+    }
+
+    @Override
+    public void onProfileUpdated(Networking.GenericResponse response)
+    {
+        String s = response.description + " " + response.success;
+        Toast toast = Toast.makeText(getContext(),s,Toast.LENGTH_LONG);
     }
 }
