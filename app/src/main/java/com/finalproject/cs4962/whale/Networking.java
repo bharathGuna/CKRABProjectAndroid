@@ -131,7 +131,12 @@ public class Networking
         public String userID;
     }
 
+<<<<<<< HEAD
     public static final String SERVER_IP = "155.99.231.128";
+=======
+    public static final String
+            SERVER_IP = "155.99.231.128";
+>>>>>>> 7b76a53d2b6b0c0bc365d4d0347cbe743fbeeb26
     public static final int SERVER_PORT = 2000;
 
     public static CreateAccountResponse createNewAccount(String username)
