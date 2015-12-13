@@ -67,12 +67,14 @@ public class DataManager
     public interface OnFriendshipChangeListener
     {
         void onFriendAdded(Networking.GenericResponse response);
+
         void onFriendRemoved(Networking.GenericResponse response);
     }
 
     public interface OnConvoListChangedListener
     {
         void onConvoCreated(String convoID);
+
         void onConvoDeleted(Networking.GenericResponse response);
     }
 
@@ -105,6 +107,7 @@ public class DataManager
     private String username;
     /* TODO: Convert to usable data objects */
     private List<Conversation> conversationList;
+    private List<String> personalBoard;
     private List<Networking.Soundbite> globalSoundboard;
     //? current convo messages list
 
@@ -128,6 +131,7 @@ public class DataManager
     {
         conversationList = new ArrayList<>();
         globalSoundboard = new ArrayList<>();
+        personalBoard = new ArrayList<>();
     }
 
     public String getUserID()
@@ -135,7 +139,10 @@ public class DataManager
         return userID;
     }
 
-    public String getUsername() {return username;}
+    public String getUsername()
+    {
+        return username;
+    }
 
     public int getConversationCount()
     {
@@ -145,6 +152,36 @@ public class DataManager
     public Conversation getConversationAt(int index)
     {
         return conversationList.get(index);
+    }
+
+    public int getPersonalBoardCount()
+    {
+        return personalBoard.size();
+    }
+
+    public String getPersonalBiteAt(int index)
+    {
+        return personalBoard.get(index);
+    }
+
+    public void addPersonalBite(String bitename)
+    {
+        personalBoard.add(bitename);
+    }
+
+    public void deletePersonalBite(String bitename)
+    {
+        personalBoard.remove(bitename);
+    }
+
+    public int getGlobalBoardCount()
+    {
+        return globalSoundboard.size();
+    }
+
+    public Networking.Soundbite getGlobalBite(int index)
+    {
+        return globalSoundboard.get(index);
     }
 
     public void setOnAccountCreatedListener(OnAccountCreatedListener onAccountCreatedListener)
@@ -224,21 +261,21 @@ public class DataManager
 
     public List<Message> loadPreviousMessagesInConvo(String path)
     {
-//        int counter = 0;
-//        String id = "";
-//
-//        List<Message> messages = new ArrayList<>();
-//        File file = new File(path + "/" + counter);
-//        while (file.exists())
-//        {
-//            messages.add(new Message(""+counter,));
-//            counter++;
-//            file = new File(path + "/" + counter);
-//        }
-//        return messages;
+        //        int counter = 0;
+        //        String id = "";
+        //
+        //        List<Message> messages = new ArrayList<>();
+        //        File file = new File(path + "/" + counter);
+        //        while (file.exists())
+        //        {
+        //            messages.add(new Message(""+counter,));
+        //            counter++;
+        //            file = new File(path + "/" + counter);
+        //        }
+        //        return messages;
 
         File[] files = new File(path + "/").listFiles();
-                List<Message> messages = new ArrayList<>();
+        List<Message> messages = new ArrayList<>();
 
         for (File f : files)
         {
@@ -251,6 +288,18 @@ public class DataManager
             }
         }
         return messages;
+    }
+
+    public void loadPersonalSoundboard(String path)
+    {
+        File[] files = new File(path + "/").listFiles();
+        personalBoard = new ArrayList<>();
+        for (File f : files)
+        {
+            if (f.exists())
+                personalBoard.add(f.getName());
+        }
+
     }
 
     public void createAccount( String _username)
@@ -517,9 +566,6 @@ public class DataManager
                 super.onPostExecute(conversationMessagesResponse);
                 if (conversationMessagesResponse == null)
                     return;
-                /* TODO: Save these to their folder designated by convoID
-                    or let the convo activity do that, regardless
-                    the messages must be converted and saved */
 
                 if (getNewMessagesListener != null)
                     getNewMessagesListener.onGetNewMessages(conversationMessagesResponse);

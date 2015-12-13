@@ -171,14 +171,20 @@ public class AddConversationActivity extends Activity implements ListAdapter, Da
         {
             if (users.size() > 0)
             {
-                ArrayList<String> ids = new ArrayList<>();
-                ids.addAll(users.keySet());
+                ArrayList<String> _ids = new ArrayList<>();
+                ArrayList<String> _names = new ArrayList<>();
+                _ids.addAll(users.keySet());
+                _names.addAll(users.values());
 
-                Intent returnIntent = new Intent();
-                String[] names = new String[ids.size()];
-                ids.toArray(names);
-                returnIntent.putExtra("names", names);
-                returnIntent.putExtra("ids", ids);
+                Intent returnIntent = getIntent();
+
+                String[] ids = new String[_ids.size()];
+                _ids.toArray(ids);
+                String[] names = new String[_names.size()];
+                _names.toArray(names);
+
+                returnIntent.putExtra("return_names", names);
+                returnIntent.putExtra("return_ids", ids);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }

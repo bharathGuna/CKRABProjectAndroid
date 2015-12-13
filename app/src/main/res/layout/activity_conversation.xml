@@ -28,6 +28,9 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="BHARATH IS A GENIUS"
+            android:ellipsize="end"
+            android:scrollHorizontally="true"
+            android:maxLines="1"
             android:textColor="@color/textColorPrimary"
             android:textSize="20dp"
             android:id="@+id/title_text"/>

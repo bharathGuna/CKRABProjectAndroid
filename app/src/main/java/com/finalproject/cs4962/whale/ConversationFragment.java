@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -36,7 +37,6 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
         return fragment;
     }
 
-    public static final int SELECT_PEOPLE = 1;
     private String[] names = null;
     private String[] ids = null;
 
@@ -66,10 +66,6 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
 
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.convo_list_refresh);
         refreshLayout.setOnRefreshListener(this);
-        //        int[] colors = {0, getResources().getColor(R.color.textColorPrimary), 0}; // red for the example
-        //        listView.setDivider(new GradientDrawable(GradientDrawable.Orientation.RIGHT_LEFT, colors));
-        //        int height = (int) (2 * getResources().getDisplayMetrics().density);
-        //        listView.setDividerHeight(height);
 
         FloatingActionButton addButton = (FloatingActionButton) getActivity().findViewById(R.id.add_convo_button);
         addButton.setOnClickListener(this);
@@ -80,7 +76,7 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
     {
         Intent createConvoIntent = new Intent();
         createConvoIntent.setClass(getActivity(), AddConversationActivity.class);
-        startActivity(createConvoIntent);
+        startActivityForResult(createConvoIntent, 1);
     }
 
 
@@ -97,13 +93,14 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_PEOPLE)
+        if (requestCode == 1)
         {
             if (resultCode == Activity.RESULT_OK)
             {
-                names = (String [])data.getExtras().get("names");
-                ids = (String [])data.getExtras().get("ids");
-                List<String> userIDs = Arrays.asList(ids);
+                names = (String [])data.getExtras().get("return_names");
+                ids = (String [])data.getExtras().get("return_ids");
+                List<String> userIDs = new ArrayList<>();
+                userIDs.addAll(Arrays.asList(ids));
 
                 DataManager.getInstance().createConversation(userIDs);
             }
@@ -178,12 +175,20 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
         rootLayout.setOrientation(LinearLayout.VERTICAL);
 
         CircularImageView profile = new CircularImageView(getActivity());
-        profile.setImageResource(R.drawable.whale);
+        Bitmap bm = DataManager.getInstance().stringToBitmap(convo.users.get(0).pic);
+        profile.setImageBitmap(bm);
+        profile.setName(convo.users.get(0).name);
+
+        List<Conversation.User> users = convo.users;
+        String names = "";
+        for(Conversation.User user : users)
+            names += user.name + ", ";
+        names = names.substring(0, names.length() - 2);
 
         TextView username = new TextView(getActivity());
-        /* TODO: Put all names together */
-        username.setText(convo.users.get(0).name);
+        username.setText(names);
         username.setGravity(Gravity.CENTER_VERTICAL);
+        username.setSingleLine();
         int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
         username.setPadding(padding, 0, 0, padding);
         username.setTextColor(getResources().getColor(R.color.textColorPrimary));
@@ -233,8 +238,16 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
         Intent toConversationIntent = new Intent();
         toConversationIntent.setClass(getActivity(), ConversationActivity.class);
         toConversationIntent.putExtra("convoID", convo.convoID);
-        startActivityForResult(toConversationIntent, SELECT_PEOPLE);
-        //        startActivity(toConversationIntent);
+        List<Conversation.User> users = convo.users;
+        List<String> _names = new ArrayList<>();
+        for (Conversation.User user : users)
+        {
+            _names.add(user.name);
+        }
+        String[] names = new String[_names.size()];
+        _names.toArray(names);
+        toConversationIntent.putExtra("names", names);
+        startActivity(toConversationIntent);
     }
 
     @Override

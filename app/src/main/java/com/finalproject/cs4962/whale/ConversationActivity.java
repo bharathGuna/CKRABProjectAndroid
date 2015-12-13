@@ -300,11 +300,13 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
         if (!message.senderID.equals(DataManager.getInstance().getUserID()))
         {
+            /* TODO: Get user image with their id at beginning and use that image here */
             rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
             rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
         }
         else
         {
+            /* TODO: Use self image */
             rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
             rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
         }
