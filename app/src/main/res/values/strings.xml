@@ -25,4 +25,5 @@
     <string name="title_activity_login">Sign in</string>
     <string name="title_activity_about_me">AboutMeActivity</string>
     <string name="title_activity_add_friend">AddFriendActivity</string>
+    <string name="title_activity_search">SearchActivity</string>
 </resources>

@@ -55,6 +55,11 @@
             android:label="@string/title_activity_add_friend"
             android:theme="@style/MyMaterialTheme">
         </activity>
+        <activity
+            android:name=".Activities.SearchActivity"
+            android:label="@string/title_activity_search"
+            android:theme="@style/MyMaterialTheme">
+        </activity>
     </application>
 
 </manifest>

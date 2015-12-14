@@ -23,6 +23,7 @@ import com.finalproject.cs4962.whale.R;
 public class DescriptionFragment extends Fragment implements View.OnClickListener, DataManager.OnProfileUpdatedListener
 {
     private final String ABOUTME = "ABOUTME";
+    private static final String MODE = "MODE";
     private String current = "";
     public static DescriptionFragment newInstance()
     {
@@ -42,7 +43,6 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
         RelativeLayout layout = (RelativeLayout)inflater.inflate(R.layout.fragment_description, container, false);
 
         TextView text = (TextView)layout.findViewById(R.id.aboutme);
-        text.setOnClickListener(this);
 
         return layout;
     }

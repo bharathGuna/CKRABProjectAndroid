@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.finalproject.cs4962.whale.Activities.AddFriendActivity;
 import com.finalproject.cs4962.whale.Activities.ProfileActivity;
+import com.finalproject.cs4962.whale.Activities.SearchActivity;
 import com.finalproject.cs4962.whale.CircularImageView;
 import com.finalproject.cs4962.whale.DataManager;
 import com.finalproject.cs4962.whale.Friend;
@@ -32,7 +34,7 @@ import java.util.List;
 
 public class FriendFragment extends Fragment implements ListAdapter, DataManager.GetFriendsListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener
 {
-    private  GridView gridView;
+    //private  GridView gridView;
     private List<Friend> friends;
     public static FriendFragment newInstance()
     {
@@ -62,7 +64,7 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
     public void onStart()
     {
         super.onStart();
-        gridView = (GridView) getActivity().findViewById(R.id.friend_list_grid);
+        GridView gridView = (GridView) getActivity().findViewById(R.id.friend_list_grid);
         gridView.setAdapter(this);
         gridView.setOnItemClickListener(getOnItemClickListener());
 
@@ -71,6 +73,8 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.navigationBarColor));
         refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
 
+        ImageButton search = (ImageButton)getActivity().findViewById(R.id.search_button);
+        search.setOnClickListener(this);
         FloatingActionButton button = (FloatingActionButton)getActivity().findViewById(R.id.findFriend);
         button.setOnClickListener(this);
     }
@@ -152,6 +156,7 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         OnlineIndicatorView indicatorView = new OnlineIndicatorView(getContext());
         CircularImageView imageView;
         TextView name;
+        GridView gridView = (GridView)getActivity().findViewById(R.id.friend_list_grid);
         int size = (int) (getResources().getDisplayMetrics().widthPixels/gridView.getNumColumns() * .8f );
 
         RelativeLayout stateLayout = new RelativeLayout(getContext());
@@ -201,6 +206,7 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
     public void onGetFriends(List<Friend> friends)
     {
         this.friends = friends;
+        GridView gridView = (GridView)getActivity().findViewById(R.id.friend_list_grid);
         gridView.invalidateViews();
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.friend_list_refresh);
         refreshLayout.setRefreshing(false);
@@ -221,6 +227,15 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
             {
                 Intent toSearchActivity = new Intent();
                 toSearchActivity.setClass(getActivity(), AddFriendActivity.class);
+                startActivity(toSearchActivity);
+            }
+        }
+        else if(view instanceof ImageButton)
+        {
+            if(view == getActivity().findViewById(R.id.search_button))
+            {
+                Intent toSearchActivity = new Intent();
+                toSearchActivity.setClass(getActivity(), SearchActivity.class);
                 startActivity(toSearchActivity);
             }
         }
