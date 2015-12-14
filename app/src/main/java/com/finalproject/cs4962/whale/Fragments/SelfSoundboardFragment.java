@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.database.DataSetObserver;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -44,6 +45,7 @@ public class SelfSoundboardFragment extends Fragment implements ListAdapter, Ada
     private String FILE_PATH;
     private final String tempName = "ck129bk201902k0234k0990234lk23423";
     private MediaRecorder audioRecorder;
+    private AsyncTask<Void, Void, Void> timer;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -320,9 +322,42 @@ public class SelfSoundboardFragment extends Fragment implements ListAdapter, Ada
                         audioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
                         String path = FILE_PATH + "/" + tempName;
                         audioRecorder.setOutputFile(path);
+                        audioRecorder.setMaxDuration(5000);
+                        timer = new AsyncTask<Void, Void, Void>()
+                        {
+                            @Override
+                            protected Void doInBackground(Void... voids)
+                            {
+                                try
+                                {
+                                    Thread.sleep(5000);
+                                }
+                                catch (InterruptedException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid)
+                            {
+                                super.onPostExecute(aVoid);
+
+                                if (audioRecorder != null)
+                                {
+                                    audioRecorder.stop();
+                                    audioRecorder.release();
+                                    promptForName();
+                                    audioRecorder = null;
+                                    Toast.makeText(getActivity().getApplicationContext(), "Limit reached", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        };
 
                         audioRecorder.prepare();
                         audioRecorder.start();
+                        timer.execute();
                         Toast.makeText(getActivity().getApplicationContext(), "Recording started", Toast.LENGTH_SHORT).show();
                     }
                     catch (Exception e)
@@ -341,6 +376,7 @@ public class SelfSoundboardFragment extends Fragment implements ListAdapter, Ada
                         {
                             audioRecorder.stop();
                             audioRecorder.release();
+                            timer.cancel(true);
                             promptForName();
                         }
                         catch (Exception e)

@@ -53,6 +53,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     private List<Message> messages = new ArrayList<>();
     private String convoID = "";
     private String[] names = null;
+    private AsyncTask<Void, Void, Void> recordingTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -292,9 +293,42 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
                         audioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
                         String path = FILE_PATH + "/" + DataManager.getInstance().getUserID() + messages.size();
                         audioRecorder.setOutputFile(path);
+                        audioRecorder.setMaxDuration(30000);
+
+                        recordingTimer = new AsyncTask<Void, Void, Void>()
+                        {
+                            @Override
+                            protected Void doInBackground(Void... voids)
+                            {
+                                try
+                                {
+                                    Thread.sleep(30000);
+                                }
+                                catch (InterruptedException e)
+                                {
+                                    e.printStackTrace();
+                                }
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid)
+                            {
+                                super.onPostExecute(aVoid);
+                                if (audioRecorder != null)
+                                {
+                                    audioRecorder.stop();
+                                    audioRecorder.release();
+                                    sendMessage();
+                                    audioRecorder = null;
+                                    Toast.makeText(getApplicationContext(), "Limit reached", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        };
 
                         audioRecorder.prepare();
                         audioRecorder.start();
+                        recordingTimer.execute();
                         Toast.makeText(getApplicationContext(), "Recording started", Toast.LENGTH_SHORT).show();
                     }
                     catch (Exception e)
@@ -313,6 +347,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
                         {
                             audioRecorder.stop();
                             audioRecorder.release();
+                            recordingTimer.cancel(true);
                             sendMessage();
                         }
                         catch (Exception e)
@@ -325,8 +360,6 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
                         {
                             audioRecorder = null;
                         }
-
-
                     }
 
                 }
