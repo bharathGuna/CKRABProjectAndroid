@@ -32,7 +32,7 @@
             android:background="@color/navigationBarColor"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentRight="false"
             android:id="@+id/ok_action"
             />
 
