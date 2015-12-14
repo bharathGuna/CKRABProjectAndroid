@@ -1,14 +1,19 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+
+import com.finalproject.cs4962.whale.Fragments.ConversationFragment;
+import com.finalproject.cs4962.whale.Fragments.FriendFragment;
+import com.finalproject.cs4962.whale.Fragments.ProfileFragment;
+import com.finalproject.cs4962.whale.R;
+import com.finalproject.cs4962.whale.Fragments.SoundBoardFragment;
 
 import java.util.ArrayList;
 import java.util.List;

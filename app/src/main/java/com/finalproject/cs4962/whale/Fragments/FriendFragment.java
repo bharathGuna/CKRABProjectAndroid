@@ -1,11 +1,12 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Fragments;
 
 import android.content.Intent;
-import android.os.Parcelable;
-import android.support.v4.app.Fragment;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,23 +17,24 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.finalproject.cs4962.whale.Activities.AddFriendActivity;
+import com.finalproject.cs4962.whale.Activities.ProfileActivity;
+import com.finalproject.cs4962.whale.CircularImageView;
+import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.Friend;
+import com.finalproject.cs4962.whale.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Bharath on 12/5/2015.
- */
-public class ProfileFriendFragment extends Fragment implements ListAdapter
+
+public class FriendFragment extends Fragment implements ListAdapter, DataManager.GetFriendsListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener
 {
-    private GridView gridView;
-    private ArrayList<Friend> friends;
-    private static String FRIENDS = "FRIENDS";
-    public static ProfileFriendFragment newInstance(ArrayList<Friend> friendsList)
+    private  GridView gridView;
+    private List<Friend> friends;
+    public static FriendFragment newInstance()
     {
-        ProfileFriendFragment fragment = new ProfileFriendFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(FRIENDS, friendsList);
-        fragment.setArguments(bundle);
+        FriendFragment fragment = new FriendFragment();
         return fragment;
     }
 
@@ -40,23 +42,33 @@ public class ProfileFriendFragment extends Fragment implements ListAdapter
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        DataManager manager = DataManager.getInstance();
+        manager.setGetFriendsListener(this);
+        manager.getFriendsList(manager.getUserID());
+        friends = new ArrayList<>();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        return inflater.inflate(R.layout.fragment_friends_list, container, false);
 
-        if(getArguments() != null && getArguments().containsKey(FRIENDS))
-        {
-            friends = getArguments().getParcelableArrayList(FRIENDS);
-        }
-        LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.fragment_profile_friends_list, container, false);
-        gridView = (GridView) layout.findViewById(R.id.profile_friend_list_grid);
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        gridView = (GridView) getActivity().findViewById(R.id.friend_list_grid);
         gridView.setAdapter(this);
         gridView.setOnItemClickListener(getOnItemClickListener());
-        return layout;
 
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.friend_list_refresh);
+        refreshLayout.setOnRefreshListener(this);
+
+        FloatingActionButton button = (FloatingActionButton)getActivity().findViewById(R.id.findFriend);
+        button.setOnClickListener(this);
     }
 
     private AdapterView.OnItemClickListener getOnItemClickListener()
@@ -77,7 +89,7 @@ public class ProfileFriendFragment extends Fragment implements ListAdapter
 
 
 
-        return listener;
+         return listener;
     }
     @Override
     public boolean areAllItemsEnabled()
@@ -171,5 +183,32 @@ public class ProfileFriendFragment extends Fragment implements ListAdapter
     }
 
 
+    @Override
+    public void onGetFriends(List<Friend> friends)
+    {
+        this.friends = friends;
+        gridView.invalidateViews();
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.friend_list_refresh);
+        refreshLayout.setRefreshing(false);
+    }
 
+    @Override
+    public void onRefresh()
+    {
+        DataManager.getInstance().getFriendsList(DataManager.getInstance().getUserID());
+    }
+
+    @Override
+    public void onClick(View view)
+    {
+        if (view instanceof FloatingActionButton)
+        {
+            if (view == getActivity().findViewById(R.id.findFriend))
+            {
+                Intent toSearchActivity = new Intent();
+                toSearchActivity.setClass(getActivity(), AddFriendActivity.class);
+                startActivity(toSearchActivity);
+            }
+        }
+    }
 }

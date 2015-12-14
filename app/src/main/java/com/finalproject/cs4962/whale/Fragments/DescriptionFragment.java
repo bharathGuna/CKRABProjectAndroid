@@ -1,24 +1,21 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.finalproject.cs4962.whale.Activities.AboutMeActivity;
+import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.Networking;
+import com.finalproject.cs4962.whale.R;
 
 /**
  * Created by Khong on 12/5/15.
@@ -51,7 +48,7 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
         text.setOnClickListener(this);
         if(savedInstanceState != null && savedInstanceState.containsKey(ABOUTME))
         {
-            setAboutText((String)savedInstanceState.get(ABOUTME));
+            setAboutText((String) savedInstanceState.get(ABOUTME));
         }
 
         return layout;

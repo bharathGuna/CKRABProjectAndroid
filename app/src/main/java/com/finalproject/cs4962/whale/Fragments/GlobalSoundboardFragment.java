@@ -1,4 +1,4 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Fragments;
 
 import android.database.DataSetObserver;
 import android.media.MediaPlayer;
@@ -16,6 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.Networking;
+import com.finalproject.cs4962.whale.R;
+import com.finalproject.cs4962.whale.SoundbiteView;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

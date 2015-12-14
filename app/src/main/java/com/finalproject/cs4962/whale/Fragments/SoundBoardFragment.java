@@ -1,4 +1,4 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,7 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+
+import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;
 import java.util.List;

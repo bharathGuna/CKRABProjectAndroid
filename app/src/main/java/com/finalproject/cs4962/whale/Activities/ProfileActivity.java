@@ -1,33 +1,27 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Activities;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.DataSetObserver;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.finalproject.cs4962.whale.CircularImageView;
+import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.Fragments.DescriptionFragment;
+import com.finalproject.cs4962.whale.DrawButton;
+import com.finalproject.cs4962.whale.Friend;
+import com.finalproject.cs4962.whale.OtherProfileInfo;
+import com.finalproject.cs4962.whale.Fragments.ProfileFriendFragment;
+import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;
 import java.util.List;

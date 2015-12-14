@@ -1,4 +1,4 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -27,6 +27,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;
 import java.util.List;

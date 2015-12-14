@@ -1,4 +1,4 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,6 +23,10 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.R;
+import com.finalproject.cs4962.whale.SoundbiteView;
 
 import java.io.DataInputStream;
 import java.io.File;

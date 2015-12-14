@@ -1,27 +1,31 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.finalproject.cs4962.whale.Activities.AddConversationActivity;
+import com.finalproject.cs4962.whale.Activities.ConversationActivity;
+import com.finalproject.cs4962.whale.CircularImageView;
+import com.finalproject.cs4962.whale.Conversation;
+import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.Networking;
+import com.finalproject.cs4962.whale.R;
+import com.finalproject.cs4962.whale.WaveView;
 
 import java.util.ArrayList;
 import java.util.Arrays;

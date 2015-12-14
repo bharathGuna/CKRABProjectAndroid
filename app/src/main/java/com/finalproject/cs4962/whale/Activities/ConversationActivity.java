@@ -1,4 +1,4 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Activities;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,6 +22,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+
+import com.finalproject.cs4962.whale.CircularImageView;
+import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.Message;
+import com.finalproject.cs4962.whale.Networking;
+import com.finalproject.cs4962.whale.R;
+import com.finalproject.cs4962.whale.SoundbiteView;
+import com.finalproject.cs4962.whale.WaveView;
 
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;

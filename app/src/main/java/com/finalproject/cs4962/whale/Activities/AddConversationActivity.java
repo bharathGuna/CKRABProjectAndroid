@@ -1,4 +1,4 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,6 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.finalproject.cs4962.whale.CircularImageView;
+import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.Friend;
+import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
