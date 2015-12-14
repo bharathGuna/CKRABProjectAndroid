@@ -270,15 +270,6 @@ public class SelfSoundboardFragment extends Fragment implements ListAdapter, Ada
         String bite = (String) getItem(i);
         String path = FILE_PATH + "/" + bite;
         MediaPlayer player = new MediaPlayer();
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
-        {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer)
-            {
-                GridView gridView = (GridView) getActivity().findViewById(R.id.self_board_grid);
-                gridView.setAdapter(SelfSoundboardFragment.this);
-            }
-        });
         try
         {
             player.setDataSource(path);
@@ -290,9 +281,6 @@ public class SelfSoundboardFragment extends Fragment implements ListAdapter, Ada
 
         try
         {
-            LinearLayout ll = (LinearLayout)view;
-            SoundbiteView sbv = (SoundbiteView)ll.getChildAt(0);
-            sbv.select();
             player.prepare();
             player.start();
             Toast.makeText(getActivity().getApplicationContext(), "Playing", Toast.LENGTH_SHORT).show();
@@ -337,22 +325,12 @@ public class SelfSoundboardFragment extends Fragment implements ListAdapter, Ada
                 {
                     if (audioRecorder != null)
                     {
-                        try
-                        {
-                            audioRecorder.stop();
-                            audioRecorder.release();
-                            promptForName();
-                        }
-                        catch (Exception e)
-                        {
-                            e.printStackTrace();
-                            Toast.makeText(getActivity().getApplicationContext(), "Hold to record, not tap", Toast.LENGTH_SHORT).show();
+                        audioRecorder.stop();
+                        audioRecorder.release();
+                        audioRecorder = null;
 
-                        }
-                        finally
-                        {
-                            audioRecorder = null;
-                        }
+                        promptForName();
+
 
                     }
                 }

@@ -35,6 +35,7 @@ public class GlobalSoundboardFragment extends Fragment implements ListAdapter, A
     }
 
     private String FILE_PATH;
+    private MediaRecorder audioRecorder;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -87,7 +88,7 @@ public class GlobalSoundboardFragment extends Fragment implements ListAdapter, A
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.global_board_refresh);
         refreshLayout.setRefreshing(false);
         GridView gridView = (GridView) getActivity().findViewById(R.id.global_board_grid);
-        gridView.invalidateViews();
+gridView.invalidateViews();
 
     }
 
@@ -208,15 +209,6 @@ public class GlobalSoundboardFragment extends Fragment implements ListAdapter, A
         Networking.Soundbite bite = (Networking.Soundbite) getItem(i);
         String path = FILE_PATH + "/" + bite.uploaderID + bite.soundbiteName;
         MediaPlayer player = new MediaPlayer();
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener()
-        {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer)
-            {
-                GridView gridView = (GridView) getActivity().findViewById(R.id.global_board_grid);
-                gridView.setAdapter(GlobalSoundboardFragment.this);
-            }
-        });
         try
         {
             player.setDataSource(path);
@@ -228,9 +220,6 @@ public class GlobalSoundboardFragment extends Fragment implements ListAdapter, A
 
         try
         {
-            LinearLayout ll = (LinearLayout)view;
-            SoundbiteView sbv = (SoundbiteView)ll.getChildAt(0);
-            sbv.select();
             player.prepare();
             player.start();
             Toast.makeText(getActivity().getApplicationContext(), "Playing", Toast.LENGTH_SHORT).show();

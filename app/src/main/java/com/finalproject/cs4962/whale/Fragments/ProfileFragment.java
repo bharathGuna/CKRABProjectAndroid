@@ -127,10 +127,7 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String picturePath = cursor.getString(columnIndex);
                 cursor.close();
-                Bitmap pic = BitmapFactory.decodeFile(picturePath);
-                profilePic.setImageBitmap(pic);
-                String img = DataManager.getInstance().bitmapToString(pic);
-                DataManager.getInstance().updateUserProfile(img, "");
+                profilePic.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 
             }
         }
