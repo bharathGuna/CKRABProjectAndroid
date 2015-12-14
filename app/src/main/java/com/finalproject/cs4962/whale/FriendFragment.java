@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Gravity;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FriendFragment extends Fragment implements ListAdapter, DataManager.GetFriendsListener, SwipeRefreshLayout.OnRefreshListener
+public class FriendFragment extends Fragment implements ListAdapter, DataManager.GetFriendsListener, SwipeRefreshLayout.OnRefreshListener, View.OnClickListener
 {
     private  GridView gridView;
     private List<Friend> friends;
@@ -61,6 +62,9 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
 
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.friend_list_refresh);
         refreshLayout.setOnRefreshListener(this);
+
+        FloatingActionButton button = (FloatingActionButton)getActivity().findViewById(R.id.findFriend);
+        button.setOnClickListener(this);
     }
 
     private AdapterView.OnItemClickListener getOnItemClickListener()
@@ -188,5 +192,19 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
     public void onRefresh()
     {
         DataManager.getInstance().getFriendsList(DataManager.getInstance().getUserID());
+    }
+
+    @Override
+    public void onClick(View view)
+    {
+        if (view instanceof FloatingActionButton)
+        {
+            if (view == getActivity().findViewById(R.id.findFriend))
+            {
+                Intent toSearchActivity = new Intent();
+                toSearchActivity.setClass(getActivity(), AddFriendActivity.class);
+                startActivity(toSearchActivity);
+            }
+        }
     }
 }

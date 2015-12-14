@@ -59,4 +59,13 @@ public class AboutMeActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        String text = (String) getIntent().getExtras().get(CURRENTTEXT);
+        Intent returnIntent = getIntent();
+        returnIntent.putExtra(CURRENTTEXT, text);
+        setResult(Activity.RESULT_CANCELED, returnIntent);
+        finish();
+    }
 }

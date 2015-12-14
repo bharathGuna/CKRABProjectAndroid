@@ -104,6 +104,11 @@ public class DataManager
         void onUserFound(Networking.FindUserResponse response);
     }
 
+    public interface OnGotImageListener
+    {
+        void onGotImage(Networking.ImageResponse response);
+    }
+
     private String userID;
     private String username;
 
@@ -128,6 +133,7 @@ public class DataManager
     private OnSoundbiteUploadedListener onSoundbiteUploadedListener;
     private OnUpdateReceivedListener onUpdateReceivedListener;
     private OnUserFoundListener onUserFoundListener;
+    private OnGotImageListener onGotImageListener;
 
     private DataManager()
     {
@@ -269,6 +275,11 @@ public class DataManager
     public void setOnUserFoundListener(OnUserFoundListener onUserFoundListener)
     {
         this.onUserFoundListener = onUserFoundListener;
+    }
+
+    public void setOnGotImageListener(OnGotImageListener onGotImageListener)
+    {
+        this.onGotImageListener = onGotImageListener;
     }
 
     public List<Message> loadPreviousMessagesInConvo(String path)
@@ -855,6 +866,31 @@ public class DataManager
         };
 
         findTask.execute(username);
+    }
+
+    public void getUserImage(String userID)
+    {
+        AsyncTask<String, Integer, Networking.ImageResponse> imageTask = new AsyncTask<String, Integer, Networking.ImageResponse>()
+        {
+            @Override
+            protected Networking.ImageResponse doInBackground(String... strings)
+            {
+                return Networking.getImage(strings[0]);
+            }
+
+            @Override
+            protected void onPostExecute(Networking.ImageResponse imageResponse)
+            {
+                super.onPostExecute(imageResponse);
+
+                if (imageResponse == null)
+                    return;
+
+                if (onGotImageListener != null)
+                    onGotImageListener.onGotImage(imageResponse);
+            }
+        };
+        imageTask.execute(userID);
     }
 
     /**

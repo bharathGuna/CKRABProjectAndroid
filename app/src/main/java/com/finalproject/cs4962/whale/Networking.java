@@ -129,6 +129,7 @@ public class Networking
     {
         public String username;
         public String userID;
+        public String profilePic;
     }
 
     public class ImageResponse
