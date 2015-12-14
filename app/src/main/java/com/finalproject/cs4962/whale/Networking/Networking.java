@@ -138,6 +138,7 @@ public class Networking
     }
 
     public static final String SERVER_IP = "155.99.231.29";
+
     public static final int SERVER_PORT = 2000;
 
     public static CreateAccountResponse createNewAccount(String username)

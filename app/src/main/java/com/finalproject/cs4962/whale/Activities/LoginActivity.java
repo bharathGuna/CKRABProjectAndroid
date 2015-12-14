@@ -123,7 +123,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
                         InputMethodManager.HIDE_NOT_ALWAYS);
-
                 name = username.getText().toString();
                 // Check for a valid email address.
                 if (TextUtils.isEmpty(name))

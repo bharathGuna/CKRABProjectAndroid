@@ -24,7 +24,7 @@ import com.finalproject.cs4962.whale.Activities.ProfileActivity;
 import com.finalproject.cs4962.whale.Views.CircularImageView;
 import com.finalproject.cs4962.whale.Networking.DataManager;
 import com.finalproject.cs4962.whale.Networking.Friend;
-import com.finalproject.cs4962.whale.Views.OnlineIndicatorView;
+import com.finalproject.cs4962.whale.OnlineIndicatorView;
 import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;
@@ -173,7 +173,7 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         name.setTextSize(getResources().getDisplayMetrics().density * 5f);
         name.setGravity(Gravity.CENTER);
         name.setTextColor(Color.WHITE);
-        layout.addView(stateLayout,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        layout.addView(stateLayout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         layout.addView(imageView, new LinearLayout.LayoutParams(size,size,3));
         layout.addView(name, new  LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1));
 
