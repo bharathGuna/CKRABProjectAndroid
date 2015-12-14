@@ -12,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.finalproject.cs4962.whale.Activities.AddFriendActivity;
@@ -22,6 +24,7 @@ import com.finalproject.cs4962.whale.Activities.ProfileActivity;
 import com.finalproject.cs4962.whale.CircularImageView;
 import com.finalproject.cs4962.whale.DataManager;
 import com.finalproject.cs4962.whale.Friend;
+import com.finalproject.cs4962.whale.OnlineIndicatorView;
 import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;
@@ -46,13 +49,26 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         manager.setGetFriendsListener(this);
         manager.getFriendsList(manager.getUserID());
         friends = new ArrayList<>();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_friends_list, container, false);
+
+        FrameLayout layout = (FrameLayout)inflater.inflate(R.layout.fragment_friends_list, container, false);
+        gridView = (GridView) layout.findViewById(R.id.friend_list_grid);
+        gridView.setAdapter(this);
+        gridView.setOnItemClickListener(getOnItemClickListener());
+
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)layout.findViewById(R.id.friend_list_refresh);
+        refreshLayout.setOnRefreshListener(this);
+
+        FloatingActionButton button = (FloatingActionButton)layout.findViewById(R.id.findFriend);
+        button.setOnClickListener(this);
+
+        return layout;
 
     }
 
@@ -60,15 +76,6 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
     public void onStart()
     {
         super.onStart();
-        gridView = (GridView) getActivity().findViewById(R.id.friend_list_grid);
-        gridView.setAdapter(this);
-        gridView.setOnItemClickListener(getOnItemClickListener());
-
-        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.friend_list_refresh);
-        refreshLayout.setOnRefreshListener(this);
-
-        FloatingActionButton button = (FloatingActionButton)getActivity().findViewById(R.id.findFriend);
-        button.setOnClickListener(this);
     }
 
     private AdapterView.OnItemClickListener getOnItemClickListener()
@@ -145,18 +152,28 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         Friend friend = (Friend)getItem(i);
         LinearLayout layout = new LinearLayout(getContext());
         layout.setOrientation(LinearLayout.VERTICAL);
+        OnlineIndicatorView indicatorView = new OnlineIndicatorView(getContext());
         CircularImageView imageView;
         TextView name;
         int size = (int) (getResources().getDisplayMetrics().widthPixels/gridView.getNumColumns() * .8f );
+
+        RelativeLayout stateLayout = new RelativeLayout(getContext());
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (size * .15f), (int) (size * .15f));
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        indicatorView.setLayoutParams(params);
+        stateLayout.addView(indicatorView);
+        indicatorView.setState(true);
         imageView = new CircularImageView(getContext());
         imageView.setImageBitmap(friend.profilePic);
         imageView.setName(friend.name);
+
         name = new TextView(getContext());
         name.setText(friend.name);
         name.setLines(3);
         name.setTextSize(getResources().getDisplayMetrics().density * 5f);
         name.setGravity(Gravity.CENTER);
         name.setTextColor(Color.WHITE);
+        layout.addView(stateLayout,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         layout.addView(imageView, new LinearLayout.LayoutParams(size,size,3));
         layout.addView(name, new  LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT,1));
 
