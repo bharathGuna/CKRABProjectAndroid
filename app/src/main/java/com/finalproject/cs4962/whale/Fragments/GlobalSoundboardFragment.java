@@ -41,6 +41,8 @@ public class GlobalSoundboardFragment extends Fragment implements ListAdapter, A
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        DataManager.getInstance().setGetGlobalSoundboardListener(this);
+        DataManager.getInstance().refreshGlobalSoundboard();
     }
 
     @Override
@@ -59,14 +61,14 @@ public class GlobalSoundboardFragment extends Fragment implements ListAdapter, A
 
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.global_board_refresh);
         refreshLayout.setOnRefreshListener(this);
+        refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.navigationBarColor));
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
 
         FILE_PATH = getActivity().getFilesDir() + "/global";
         File dir = new File(FILE_PATH);
         if (!dir.exists())
             dir.mkdir();
 
-        DataManager.getInstance().setGetGlobalSoundboardListener(this);
-        DataManager.getInstance().refreshGlobalSoundboard();
 
     }
 

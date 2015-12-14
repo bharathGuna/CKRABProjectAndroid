@@ -36,12 +36,11 @@ import java.util.List;
     //need to create a new tablayout or xml file.
 public class ProfileFragment extends Fragment implements DataManager.GetUserProfileListener
 {
-
     //components of the fragment
-    CircularImageView profilePic;
-    TextView name, totalMessage;
-    TabLayout tabLayout;
-    ViewPager viewPager;
+//    CircularImageView profilePic;
+//    TextView name, totalMessage;
+//    TabLayout tabLayout;
+//    ViewPager viewPager;
 
     private static final int SELECT_SINGLE_PICTURE = 101;
     public static final String IMAGE_TYPE = "image/*";
@@ -56,26 +55,18 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
     {
         //LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.fragment_profile,container,false);
         ViewFlipper layout = (ViewFlipper)inflater.inflate(R.layout.fragment_profile,container,false);
-        profilePic = (CircularImageView)layout.findViewById(R.id.profilePic);
-        name = (TextView) layout.findViewById(R.id.name);
-        totalMessage = (TextView) layout.findViewById(R.id.totalMessages);
-        tabLayout = (TabLayout) layout.findViewById(R.id.profileTabs);
-        viewPager = (ViewPager) layout.findViewById(R.id.profileViewpager);
+        TabLayout tabLayout = (TabLayout) layout.findViewById(R.id.profileTabs);
+        ViewPager viewPager = (ViewPager) layout.findViewById(R.id.profileViewpager);
 
-        //setting up the profile pic
-        //depending on users or friends
-
-        //setting up the buttons
-
-
-       viewPager.removeAllViews();
-       viewPager.setAdapter(null);
-       setupViewPager(viewPager);
+        viewPager.removeAllViews();
+        viewPager.setAdapter(null);
+        setupViewPager(viewPager);
 
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabTextColors(Color.WHITE, Color.WHITE);
 
-        profilePic.setOnClickListener(selectPicture());
+        CircularImageView imageView = (CircularImageView) layout.findViewById(R.id.profilePic);
+        imageView.setOnClickListener(selectPicture());
         return layout;
     }
 
@@ -128,6 +119,7 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
                 String picturePath = cursor.getString(columnIndex);
                 cursor.close();
                 Bitmap pic = BitmapFactory.decodeFile(picturePath);
+                CircularImageView profilePic = (CircularImageView)getActivity().findViewById(R.id.profilePic);
                 profilePic.setImageBitmap(pic);
                 String img = DataManager.getInstance().bitmapToString(pic);
                 DataManager.getInstance().updateUserProfile(img, "");
@@ -147,14 +139,18 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
     {
         //need to set the profile with the correct information
 
+        TextView name = (TextView)getActivity().findViewById(R.id.name);
+        TextView totalMessage = (TextView)getActivity().findViewById(R.id.totalMessages);
         name.setText(profile.name);
         totalMessage.setText("Total Messages: "+ profile.messages);
         //setting the about text
+        ViewPager viewPager = (ViewPager)getActivity().findViewById(R.id.profileViewpager);
         ViewPagerAdapter adapter = (ViewPagerAdapter)viewPager.getAdapter();
         DescriptionFragment fragment = (DescriptionFragment)adapter.getItem(0);
         fragment.setAboutText(profile.about);
 
         Bitmap bm = DataManager.getInstance().stringToBitmap(profile.profilePic);
+        CircularImageView profilePic = (CircularImageView)getActivity().findViewById(R.id.profilePic);
         profilePic.setImageBitmap(bm);
         profilePic.setName(profile.name);
 

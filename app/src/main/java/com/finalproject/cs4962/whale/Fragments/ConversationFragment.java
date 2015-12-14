@@ -70,6 +70,8 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
 
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.convo_list_refresh);
         refreshLayout.setOnRefreshListener(this);
+        refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.navigationBarColor));
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
 
         FloatingActionButton addButton = (FloatingActionButton) getActivity().findViewById(R.id.add_convo_button);
         addButton.setOnClickListener(this);

@@ -921,8 +921,6 @@ public class DataManager
      */
     public Bitmap stringToBitmap(String pic)
     {
-        if(pic.isEmpty())
-            return null;
         byte[] b64, bitmapBytes;
         Bitmap bm = null;
         try

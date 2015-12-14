@@ -68,6 +68,8 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
 
         SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.friend_list_refresh);
         refreshLayout.setOnRefreshListener(this);
+        refreshLayout.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.navigationBarColor));
+        refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
 
         FloatingActionButton button = (FloatingActionButton)getActivity().findViewById(R.id.findFriend);
         button.setOnClickListener(this);
