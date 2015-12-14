@@ -50,6 +50,11 @@
             android:label="@string/title_activity_about_me"
             android:theme="@style/MyMaterialTheme">
         </activity>
+        <activity
+            android:name=".AddFriendActivity"
+            android:label="@string/title_activity_add_friend"
+            android:theme="@style/MyMaterialTheme">
+        </activity>
     </application>
 
 </manifest>

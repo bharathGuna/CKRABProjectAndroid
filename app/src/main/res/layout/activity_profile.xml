@@ -27,7 +27,6 @@
                 android:layout_gravity="center"
                 android:layout_weight="3"
                 android:lines="2"
-                android:text="My Name"
                 android:textColor="@color/textColorPrimary"
                 android:textSize="40sp"/>
 
@@ -37,7 +36,6 @@
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="Message Total :"
                 android:textColor="@color/textColorPrimary"
                 android:textSize="20sp"/>
 
@@ -47,7 +45,6 @@
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="Friended :"
                 android:textColor="@color/textColorPrimary"
                 android:textSize="20sp"/>
 

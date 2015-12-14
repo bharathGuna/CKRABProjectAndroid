@@ -40,7 +40,11 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
     private TextView name;
     private TextView totalMessage;
     private TextView friendDate;
-    private List<Friend> friends;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private DrawButton delete;
+    private DrawButton add;
+    private ArrayList<Friend> friends;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -54,12 +58,18 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
          totalMessage = (TextView) findViewById(R.id.totalMessages_activity);
          friendDate = (TextView) findViewById(R.id.friended_activity);
 
-        //check if the totalMessage sent is 0
-        DrawButton delete = (DrawButton) findViewById(R.id.deleteFriend_activity);
-        DrawButton add = (DrawButton) findViewById(R.id.addFriend_activity);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.profileTabs_activity);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.profileViewpager_activity);
 
+
+        //check if the totalMessage sent is 0
+
+        delete = (DrawButton) findViewById(R.id.deleteFriend_activity);
+        add = (DrawButton) findViewById(R.id.addFriend_activity);
+        add.setDrawSymbol(drawAddSymbol());
+        delete.setDrawSymbol(drawDeleteSymbol());
+
+        tabLayout = (TabLayout) findViewById(R.id.profileTabs_activity);
+        viewPager = (ViewPager) findViewById(R.id.profileViewpager_activity);
+        tabLayout.setTabTextColors(Color.WHITE, Color.WHITE);
 
         Intent intent = getIntent();
         String userId = (String) intent.getExtras().get(USERID);
@@ -125,27 +135,33 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
     public void onGetOtherProfile(OtherProfileInfo profile)
     {
 
-    }
-
-    private View.OnClickListener goToProfile()
-    {
-        View.OnClickListener listener = new View.OnClickListener()
+        profilePic.setImageBitmap(profile.profilePic);
+        profilePic.setName(profile.name);
+        name.setText(profile.name);
+        totalMessage.append(" " + profile.messages);
+        friendDate.append(" " + profile.friended);
+        friends = (ArrayList)profile.friends;
+        if(profile.messages == 0)
         {
-            @Override
-            public void onClick(View view)
-            {
+            delete.setVisibility(View.GONE);
+            add.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            delete.setVisibility(View.VISIBLE);
+            add.setVisibility(View.GONE);
+        }
 
-            }
-        };
-
-        return listener;
+        setupViewPager(viewPager);
+        tabLayout.setupWithViewPager(viewPager);
     }
+
 
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(DescriptionFragment.newInstance(), "About Me");
-        adapter.addFragment(ProfileFriendFragment.newInstance(), "Friends");
+        adapter.addFragment(ProfileFriendFragment.newInstance(friends), "Friends");
         viewPager.setAdapter(adapter);
     }
 

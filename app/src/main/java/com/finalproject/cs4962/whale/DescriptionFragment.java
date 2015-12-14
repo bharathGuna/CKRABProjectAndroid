@@ -71,14 +71,14 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
         Intent intent = new Intent();
         intent.setClass(getActivity(), AboutMeActivity.class);
         intent.putExtra(AboutMeActivity.CURRENTTEXT, text.getText().toString());
-        startActivityForResult(intent,1);
+        startActivityForResult(intent,3);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1)
+        if(requestCode == 3)
         {
             if(resultCode == Activity.RESULT_OK)
             {

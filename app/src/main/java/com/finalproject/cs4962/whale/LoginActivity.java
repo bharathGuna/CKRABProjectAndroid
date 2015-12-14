@@ -55,27 +55,36 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-//    private SharedPreferences preferences;
-//    private final String LOGIN = "LOGIN";
-//    private boolean login;
+    private SharedPreferences preferences;
+    private final String LOGIN = "LOGIN";
+    private final String USERID = "USERID";
+    private final String USERNAME = "USERNAME";
+    private boolean login;
+    private String userid;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-//        preferences = getPreferences(0);
-//
-//        if(preferences != null && preferences.contains(LOGIN))
-//        {
-//            login = preferences.getBoolean(LOGIN,false);
-//            if(login)
-//            {
-//                finish();
-//                Intent toMainActivityIntent = new Intent();
-//                toMainActivityIntent.setClass(LoginActivity.this, MainActivity.class);
-//                startActivity(toMainActivityIntent);
-//            }
-//        }
+        preferences = getPreferences(0);
+
+        /*if(preferences != null && preferences.contains(LOGIN))
+        {
+            login = preferences.getBoolean(LOGIN,false);
+            userid = preferences.getString(USERID, "");
+            name = preferences.getString(USERNAME,"");
+            if(login)
+            {
+                DataManager.getInstance().setUserID(userid);
+                DataManager.getInstance().setUsername(name);
+                finish();
+                Intent toMainActivityIntent = new Intent();
+                toMainActivityIntent.setClass(LoginActivity.this, MainActivity.class);
+                startActivity(toMainActivityIntent);
+            }
+        }
+        */
         DataManager.getInstance().setOnAccountCreatedListener(this);
         setContentView(R.layout.activity_login);
         // Set up the login form.
@@ -104,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onClick(View view)
             {
                 //attemptLogin();
-                String name = username.getText().toString();
+                name = username.getText().toString();
                 // Check for a valid email address.
                 if (TextUtils.isEmpty(name))
                 {
@@ -142,9 +151,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         else
         {
             finish();
-//            SharedPreferences preferences = getPreferences(0);
-//            SharedPreferences.Editor editor = preferences.edit();
-//            editor.putBoolean(LOGIN, true);
+        /*    SharedPreferences preferences = getPreferences(0);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean(LOGIN, true);
+            editor.putString(USERID,id);
+            editor.putString(USERNAME,name);
+            editor.commit();*/
             Intent toMainActivityIntent = new Intent();
             toMainActivityIntent.setClass(LoginActivity.this, MainActivity.class);
             startActivity(toMainActivityIntent);

@@ -136,6 +136,16 @@ public class DataManager
         personalBoard = new ArrayList<>();
     }
 
+    public void setUserID(String userID)
+    {
+        this.userID = userID;
+    }
+
+    public void setUsername(String username)
+    {
+        this.username = username;
+    }
+
     public String getUserID()
     {
         return userID;

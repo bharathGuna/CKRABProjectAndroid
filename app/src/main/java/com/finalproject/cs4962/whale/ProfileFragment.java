@@ -23,6 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,10 +53,21 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
         return  fragment;
     }
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("message", "This is my message to be reloaded");
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+
         super.onCreate(savedInstanceState);
+        if( savedInstanceState != null ) {
+            Toast.makeText(getContext(), savedInstanceState.getString("message"), Toast.LENGTH_LONG).show();
+        }
         //unpacking the bundle.
         DataManager dm = DataManager.getInstance();
         dm.setGetUserProfileListener(this);
@@ -65,8 +78,8 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.fragment_profile,container,false);
-
+        //LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.fragment_profile,container,false);
+        ViewFlipper layout = (ViewFlipper)inflater.inflate(R.layout.fragment_profile,container,false);
         profilePic = (CircularImageView)layout.findViewById(R.id.profilePic);
         name = (TextView) layout.findViewById(R.id.name);
         totalMessage = (TextView) layout.findViewById(R.id.totalMessages);
@@ -142,7 +155,7 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
         //need to set the profile with the correct information
 
         name.setText(profile.name);
-        totalMessage.setText(totalMessage.getText() +" "+ profile.messages);
+        totalMessage.setText("Total Messages: "+ profile.messages);
         //setting the about text
         ViewPagerAdapter adapter = (ViewPagerAdapter)viewPager.getAdapter();
         DescriptionFragment fragment = (DescriptionFragment)adapter.getItem(0);
@@ -152,7 +165,8 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
         profilePic.setImageBitmap(bm);
         profilePic.setName(profile.name);
 
-
+        ViewFlipper flipper = (ViewFlipper)getActivity().findViewById(R.id.viewflipper);
+        flipper.showNext();
     }
 
 
