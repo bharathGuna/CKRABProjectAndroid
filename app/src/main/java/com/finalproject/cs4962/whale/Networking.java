@@ -131,6 +131,11 @@ public class Networking
         public String userID;
     }
 
+    public class ImageResponse
+    {
+        public String profilePic;
+    }
+
     public static final String SERVER_IP = "155.99.161.123";
 
     public static final int SERVER_PORT = 2000;
@@ -883,6 +888,48 @@ public class Networking
         catch (Exception e)
         {
             Log.i("Networking", "Error trying to find user: " + e);
+            return null;
+        }
+    }
+
+    public static ImageResponse getImage(String userID)
+    {
+        try
+        {
+            Socket connection = new Socket();
+            connection.connect(new InetSocketAddress(SERVER_IP, SERVER_PORT), 5000);
+            DataInputStream in = new DataInputStream(connection.getInputStream());
+            DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+
+            /* Build the message */
+            String type = "getimag";
+            String message = String.format("{ \"userID\" : \"%s\" }", userID);
+            byte[] payload = packMessage(type, message);
+
+            /* Write the message to server */
+            out.write(payload);
+            out.flush();
+
+            /* Read the response from server */
+            byte byte1 = in.readByte();
+            byte byte2 = in.readByte();
+            byte byte3 = in.readByte();
+            byte byte4 = in.readByte();
+            //short inLen = toShort(byte1, byte2);
+            int inLen = toInt(byte1, byte2, byte3, byte4);
+            byte[] response = new byte[inLen];
+            in.read(response, 0, inLen);
+
+            connection.close();
+            String json = byteArrayToString(response);
+            Gson gson = new Gson();
+
+            ImageResponse imageResponse = gson.fromJson(json, ImageResponse.class);
+            return imageResponse;
+        }
+        catch (Exception e)
+        {
+            Log.i("Networking", "Error trying to get user image: " + e);
             return null;
         }
     }

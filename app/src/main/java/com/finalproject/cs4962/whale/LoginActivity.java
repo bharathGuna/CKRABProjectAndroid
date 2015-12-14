@@ -55,27 +55,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private SharedPreferences preferences;
-    private final String LOGIN = "LOGIN";
-    private boolean login;
+//    private SharedPreferences preferences;
+//    private final String LOGIN = "LOGIN";
+//    private boolean login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        preferences = getPreferences(0);
-
-        if(preferences != null && preferences.contains(LOGIN))
-        {
-            login = preferences.getBoolean(LOGIN,false);
-            if(login)
-            {
-                finish();
-                Intent toMainActivityIntent = new Intent();
-                toMainActivityIntent.setClass(LoginActivity.this, MainActivity.class);
-                startActivity(toMainActivityIntent);
-            }
-        }
+//        preferences = getPreferences(0);
+//
+//        if(preferences != null && preferences.contains(LOGIN))
+//        {
+//            login = preferences.getBoolean(LOGIN,false);
+//            if(login)
+//            {
+//                finish();
+//                Intent toMainActivityIntent = new Intent();
+//                toMainActivityIntent.setClass(LoginActivity.this, MainActivity.class);
+//                startActivity(toMainActivityIntent);
+//            }
+//        }
         DataManager.getInstance().setOnAccountCreatedListener(this);
         setContentView(R.layout.activity_login);
         // Set up the login form.
@@ -142,9 +142,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         else
         {
             finish();
-            SharedPreferences preferences = getPreferences(0);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean(LOGIN, true);
+//            SharedPreferences preferences = getPreferences(0);
+//            SharedPreferences.Editor editor = preferences.edit();
+//            editor.putBoolean(LOGIN, true);
             Intent toMainActivityIntent = new Intent();
             toMainActivityIntent.setClass(LoginActivity.this, MainActivity.class);
             startActivity(toMainActivityIntent);

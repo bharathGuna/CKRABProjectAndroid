@@ -1,23 +1,27 @@
 package com.finalproject.cs4962.whale;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.drawable.GradientDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -33,7 +37,10 @@ import java.util.TimerTask;
 public class ConversationActivity extends Activity implements ListAdapter, View.OnTouchListener, AdapterView.OnItemClickListener, DataManager.OnMessageSentListener, DataManager.GetNewMessagesListener
 {
     private String FILE_PATH;
+    private String BOARD_PATH;
     private ListView listView;
+    private GridView gridView;
+    private ViewFlipper flipper;
     private MediaRecorder audioRecorder;
     private List<Message> messages = new ArrayList<>();
     private String convoID = "";
@@ -48,6 +55,14 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         listView = (ListView) findViewById(R.id.messages_list);
         listView.setAdapter(this);
         listView.setOnItemClickListener(this);
+
+        flipper = (ViewFlipper) findViewById(R.id.convo_flipper);
+
+        GridViewAdapter adapter = new GridViewAdapter(this);
+
+        gridView = (GridView) findViewById(R.id.convo_board_grid);
+        gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(adapter);
 
         View separator = findViewById(R.id.separator);
         int[] colors = {0, getResources().getColor(R.color.textColorPrimary), 0}; // red for the example
@@ -70,6 +85,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
 
         convoID = getIntent().getExtras().getString("convoID");
 
+        BOARD_PATH = getFilesDir().getAbsolutePath() + "/global";
         FILE_PATH = getFilesDir().getAbsolutePath() + "/" + convoID;
         File dir = new File(FILE_PATH);
         if (!dir.exists())
@@ -171,9 +187,61 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         super.onBackPressed();
     }
 
-    public void soundboardPressed(View view)
+    public void toSoundboard(View view)
     {
-        DataManager.getInstance().getNewMessagesInConvo(convoID);
+        flipper.setInAnimation(this, R.anim.slide_in_from_right);
+        flipper.setOutAnimation(this, R.anim.slide_out_to_left);
+        flipper.showNext();
+    }
+
+    public void toRecord(View view)
+    {
+        flipper.setInAnimation(this, R.anim.slide_in_from_left);
+        flipper.setOutAnimation(this, R.anim.slide_out_to_right);
+        flipper.showPrevious();
+    }
+
+    public void sendBiteClicked(View view)
+    {
+        // Send, for now updates
+        GridViewAdapter adapter = (GridViewAdapter)gridView.getAdapter();
+        if (adapter.messagePath.equals(""))
+            return;
+
+        LinearLayout lt = (LinearLayout) adapter.getView(adapter.previousSelected, null, null);
+        SoundbiteView sbv = (SoundbiteView) lt.getChildAt(0);
+        sbv.select();
+
+        byte[] msg = null;
+        try
+        {
+            File file = new File(BOARD_PATH + "/" + adapter.messagePath);
+            long size = file.length();
+            FileInputStream fileInputStream = new FileInputStream(file.getPath());
+            DataInputStream in = new DataInputStream(fileInputStream);
+            msg = new byte[(int) size];
+            in.readFully(msg, 0, (int) size);
+
+            File save = new File(FILE_PATH + "/" + DataManager.getInstance().getUserID() + messages.size());
+            FileOutputStream fileOutputStream = new FileOutputStream(save);
+            BufferedOutputStream out = new BufferedOutputStream(fileOutputStream);
+            out.write(msg);
+            out.flush();
+            out.close();
+
+            String message = DataManager.getInstance().messageBytesToString(msg);
+            if (message == null)
+                throw new Exception("Soundbite could not be converted from bytes to string");
+            Toast.makeText(getApplicationContext(), "Sending to server: " + size + " bytes", Toast.LENGTH_SHORT).show();
+            DataManager.getInstance().sendMessageToConvo(convoID, message);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        adapter.messagePath = "";
+//        DataManager.getInstance().getNewMessagesInConvo(convoID);
+
     }
 
     private void sendMessage()
@@ -365,4 +433,142 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         }
     }
 
+    private class GridViewAdapter implements ListAdapter, AdapterView.OnItemClickListener
+    {
+        private Context context;
+        public String messagePath = "";
+        private int previousSelected = -1;
+        public GridViewAdapter(Context context)
+        {
+            this.context = context;
+        }
+
+        @Override
+        public boolean areAllItemsEnabled()
+        {
+            return true;
+        }
+
+        @Override
+        public boolean isEnabled(int i)
+        {
+            return true;
+        }
+
+        @Override
+        public void registerDataSetObserver(DataSetObserver dataSetObserver)
+        {
+
+        }
+
+        @Override
+        public void unregisterDataSetObserver(DataSetObserver dataSetObserver)
+        {
+
+        }
+
+        @Override
+        public int getCount()
+        {
+            return DataManager.getInstance().getGlobalBoardCount();
+        }
+
+        @Override
+        public Object getItem(int i)
+        {
+            return DataManager.getInstance().getGlobalBite(i);
+        }
+
+        @Override
+        public long getItemId(int i)
+        {
+            return 0;
+        }
+
+        @Override
+        public boolean hasStableIds()
+        {
+            return true;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup)
+        {
+            Networking.Soundbite sb = (Networking.Soundbite) getItem(i);
+
+            LinearLayout biteLayout = new LinearLayout(context);
+            biteLayout.setOrientation(LinearLayout.VERTICAL);
+
+            SoundbiteView bite = new SoundbiteView(context);
+
+            int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
+
+            TextView biteName = new TextView(context);
+            biteName.setText(sb.soundbiteName);
+            biteName.setPadding(padding / 2, 0, 0, 0);
+            biteName.setTextColor(getResources().getColor(R.color.textColorPrimary));
+            biteName.setLines(1);
+            biteName.setEllipsize(TextUtils.TruncateAt.END);
+            biteName.setHorizontallyScrolling(true);
+
+            biteLayout.addView(bite, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 0, 4));
+            biteLayout.addView(biteName, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 0, 1));
+            biteLayout.setPadding(padding, padding, padding, padding);
+            return biteLayout;
+        }
+
+        @Override
+        public int getItemViewType(int i)
+        {
+            return 0;
+        }
+
+        @Override
+        public int getViewTypeCount()
+        {
+            return 1;
+        }
+
+        @Override
+        public boolean isEmpty()
+        {
+            return getCount() > 0;
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+        {
+            LinearLayout ll;
+            SoundbiteView sbv;
+
+            if (i == previousSelected)
+            {
+                // Deselect
+                ll = (LinearLayout) gridView.getChildAt(i);
+                sbv = (SoundbiteView) ll.getChildAt(0);
+                sbv.select();
+                messagePath = "";
+                previousSelected = -1;
+            }
+            else
+            {
+                ll = (LinearLayout) gridView.getChildAt(i);
+                sbv = (SoundbiteView) ll.getChildAt(0);
+                sbv.select();
+
+                ll = (LinearLayout) gridView.getChildAt(previousSelected);
+                if (ll != null)
+                {
+                    sbv = (SoundbiteView) ll.getChildAt(0);
+                    sbv.select();
+                }
+
+                Networking.Soundbite bite = (Networking.Soundbite)getItem(i);
+                messagePath = bite.uploaderID + bite.soundbiteName;
+                previousSelected = i;
+            }
+
+
+        }
+    }
 }
