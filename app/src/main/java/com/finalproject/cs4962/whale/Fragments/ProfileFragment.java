@@ -20,9 +20,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.finalproject.cs4962.whale.CircularImageView;
-import com.finalproject.cs4962.whale.DataManager;
-import com.finalproject.cs4962.whale.Networking;
+import com.finalproject.cs4962.whale.Views.CircularImageView;
+import com.finalproject.cs4962.whale.Networking.DataManager;
+import com.finalproject.cs4962.whale.Networking.Networking;
 import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;

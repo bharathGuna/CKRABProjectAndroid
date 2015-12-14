@@ -13,8 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.finalproject.cs4962.whale.Activities.AboutMeActivity;
-import com.finalproject.cs4962.whale.DataManager;
-import com.finalproject.cs4962.whale.Networking;
+import com.finalproject.cs4962.whale.Networking.DataManager;
+import com.finalproject.cs4962.whale.Networking.Networking;
 import com.finalproject.cs4962.whale.R;
 
 /**

@@ -14,12 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.finalproject.cs4962.whale.CircularImageView;
-import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.Views.CircularImageView;
+import com.finalproject.cs4962.whale.Networking.DataManager;
 import com.finalproject.cs4962.whale.Fragments.DescriptionFragment;
-import com.finalproject.cs4962.whale.DrawButton;
-import com.finalproject.cs4962.whale.Friend;
-import com.finalproject.cs4962.whale.OtherProfileInfo;
+import com.finalproject.cs4962.whale.Views.DrawButton;
+import com.finalproject.cs4962.whale.Networking.Friend;
+import com.finalproject.cs4962.whale.Networking.OtherProfileInfo;
 import com.finalproject.cs4962.whale.Fragments.ProfileFriendFragment;
 import com.finalproject.cs4962.whale.R;
 

@@ -30,7 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.Networking.DataManager;
 import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;

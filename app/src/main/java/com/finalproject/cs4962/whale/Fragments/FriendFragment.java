@@ -21,10 +21,10 @@ import android.widget.TextView;
 
 import com.finalproject.cs4962.whale.Activities.AddFriendActivity;
 import com.finalproject.cs4962.whale.Activities.ProfileActivity;
-import com.finalproject.cs4962.whale.CircularImageView;
-import com.finalproject.cs4962.whale.DataManager;
-import com.finalproject.cs4962.whale.Friend;
-import com.finalproject.cs4962.whale.OnlineIndicatorView;
+import com.finalproject.cs4962.whale.Views.CircularImageView;
+import com.finalproject.cs4962.whale.Networking.DataManager;
+import com.finalproject.cs4962.whale.Networking.Friend;
+import com.finalproject.cs4962.whale.Views.OnlineIndicatorView;
 import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;

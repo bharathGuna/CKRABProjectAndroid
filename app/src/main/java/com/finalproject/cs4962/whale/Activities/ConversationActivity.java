@@ -6,7 +6,6 @@ import android.database.DataSetObserver;
 import android.graphics.drawable.GradientDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,13 +22,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.finalproject.cs4962.whale.CircularImageView;
-import com.finalproject.cs4962.whale.DataManager;
-import com.finalproject.cs4962.whale.Message;
-import com.finalproject.cs4962.whale.Networking;
+import com.finalproject.cs4962.whale.Views.CircularImageView;
+import com.finalproject.cs4962.whale.Networking.DataManager;
+import com.finalproject.cs4962.whale.Networking.Message;
+import com.finalproject.cs4962.whale.Networking.Networking;
 import com.finalproject.cs4962.whale.R;
-import com.finalproject.cs4962.whale.SoundbiteView;
-import com.finalproject.cs4962.whale.WaveView;
+import com.finalproject.cs4962.whale.Views.SoundbiteView;
+import com.finalproject.cs4962.whale.Views.WaveView;
 
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -39,8 +38,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ConversationActivity extends Activity implements ListAdapter, View.OnTouchListener, AdapterView.OnItemClickListener, DataManager.OnMessageSentListener, DataManager.GetNewMessagesListener
 {

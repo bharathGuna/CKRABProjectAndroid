@@ -3,9 +3,6 @@ package com.finalproject.cs4962.whale.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.DataSetObserver;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.Gravity;
@@ -17,9 +14,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.finalproject.cs4962.whale.CircularImageView;
-import com.finalproject.cs4962.whale.DataManager;
-import com.finalproject.cs4962.whale.Friend;
+import com.finalproject.cs4962.whale.Views.CircularImageView;
+import com.finalproject.cs4962.whale.Networking.DataManager;
+import com.finalproject.cs4962.whale.Networking.Friend;
 import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;

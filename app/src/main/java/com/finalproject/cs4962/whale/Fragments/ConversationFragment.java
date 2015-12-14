@@ -20,12 +20,12 @@ import android.widget.TextView;
 
 import com.finalproject.cs4962.whale.Activities.AddConversationActivity;
 import com.finalproject.cs4962.whale.Activities.ConversationActivity;
-import com.finalproject.cs4962.whale.CircularImageView;
-import com.finalproject.cs4962.whale.Conversation;
-import com.finalproject.cs4962.whale.DataManager;
-import com.finalproject.cs4962.whale.Networking;
+import com.finalproject.cs4962.whale.Views.CircularImageView;
+import com.finalproject.cs4962.whale.Networking.Conversation;
+import com.finalproject.cs4962.whale.Networking.DataManager;
+import com.finalproject.cs4962.whale.Networking.Networking;
 import com.finalproject.cs4962.whale.R;
-import com.finalproject.cs4962.whale.WaveView;
+import com.finalproject.cs4962.whale.Views.WaveView;
 
 import java.util.ArrayList;
 import java.util.Arrays;

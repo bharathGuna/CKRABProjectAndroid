@@ -1,4 +1,4 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Views;
 
 import android.content.Context;
 import android.graphics.Canvas;

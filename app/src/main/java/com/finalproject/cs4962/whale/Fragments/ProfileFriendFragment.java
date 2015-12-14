@@ -16,8 +16,8 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.finalproject.cs4962.whale.Activities.ProfileActivity;
-import com.finalproject.cs4962.whale.CircularImageView;
-import com.finalproject.cs4962.whale.Friend;
+import com.finalproject.cs4962.whale.Views.CircularImageView;
+import com.finalproject.cs4962.whale.Networking.Friend;
 import com.finalproject.cs4962.whale.R;
 
 import java.util.ArrayList;

@@ -24,9 +24,9 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.finalproject.cs4962.whale.DataManager;
+import com.finalproject.cs4962.whale.Networking.DataManager;
 import com.finalproject.cs4962.whale.R;
-import com.finalproject.cs4962.whale.SoundbiteView;
+import com.finalproject.cs4962.whale.Views.SoundbiteView;
 
 import java.io.DataInputStream;
 import java.io.File;

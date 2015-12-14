@@ -1,4 +1,4 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Views;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -12,6 +12,8 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.finalproject.cs4962.whale.R;
 
 
 public class WaveView extends View implements ValueAnimator.AnimatorUpdateListener

@@ -1,4 +1,4 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Networking;
 
 import android.util.Log;
 
@@ -137,8 +137,7 @@ public class Networking
         public String profilePic;
     }
 
-    public static final String SERVER_IP = "155.99.160.80";
-
+    public static final String SERVER_IP = "155.99.231.29";
     public static final int SERVER_PORT = 2000;
 
     public static CreateAccountResponse createNewAccount(String username)

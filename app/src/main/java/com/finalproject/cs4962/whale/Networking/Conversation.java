@@ -1,4 +1,4 @@
-package com.finalproject.cs4962.whale;
+package com.finalproject.cs4962.whale.Networking;
 
 import java.util.ArrayList;
 import java.util.Arrays;
