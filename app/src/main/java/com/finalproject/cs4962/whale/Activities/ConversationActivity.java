@@ -309,11 +309,23 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
 
                     if (audioRecorder != null)
                     {
-                        audioRecorder.stop();
-                        audioRecorder.release();
-                        audioRecorder = null;
+                        try
+                        {
+                            audioRecorder.stop();
+                            audioRecorder.release();
+                            sendMessage();
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), "Hold to record, not tap", Toast.LENGTH_SHORT).show();
 
-                        sendMessage();
+                        }
+                        finally
+                        {
+                            audioRecorder = null;
+                        }
+
 
                     }
 

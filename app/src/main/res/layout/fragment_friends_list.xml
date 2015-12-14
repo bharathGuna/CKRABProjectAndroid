@@ -42,15 +42,18 @@
 
             </LinearLayout>
 
-            <Button
+            <ImageButton
                 android:id="@+id/search_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:background="?android:selectableItemBackground"
+                android:src="@drawable/magnifier"
+                android:scaleType="fitCenter"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="0.5"
-                android:background="@color/background_material_light"
-                android:text="1"
+                android:cropToPadding="true"
                 android:textColor="@color/textColorPrimary"/>
 
         </LinearLayout>
