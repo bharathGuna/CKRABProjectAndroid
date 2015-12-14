@@ -435,11 +435,6 @@ public class DataManager
                     Bitmap ppic = stringToBitmap(pic);
                     boolean online = friend.online;
 
-                    if (ppic == null)
-                    {
-                        Log.i("String to Bitmap", "Error occurred converting string to bitmap");
-                    //    return;
-                    }
 
                     Friend frnd = new Friend(name, id, ppic, online);
                     friends.add(frnd);
@@ -926,6 +921,8 @@ public class DataManager
      */
     public Bitmap stringToBitmap(String pic)
     {
+        if(pic.isEmpty())
+            return null;
         byte[] b64, bitmapBytes;
         Bitmap bm = null;
         try
