@@ -28,6 +28,7 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
     private TextView text;
     FloatingActionButton button;
     private final String ABOUTME = "ABOUTME";
+    private String backlog;
     public static DescriptionFragment newInstance()
     {
         return new DescriptionFragment();
@@ -48,22 +49,45 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
 
         text = (TextView)layout.findViewById(R.id.aboutme);
         text.setOnClickListener(this);
+        if(savedInstanceState != null && savedInstanceState.containsKey(ABOUTME))
+        {
+            setAboutText((String)savedInstanceState.get(ABOUTME));
+        }
+
         return layout;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        if( backlog != null)
+        {
+            setAboutText(backlog);
+        }
     }
 
     public void setAboutText(String _text)
     {
-        text.setText(_text);
+        if(text != null)
+        {
+            text.setText(_text);
+        }
+        else
+        {
+            backlog = _text;
+        }
+
 
     }
 
-   /* @Override
+    @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
         outState.putString(ABOUTME, text.getText().toString());
     }
-*/
+
 
     @Override
     public void onClick(View view)

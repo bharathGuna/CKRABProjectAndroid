@@ -53,28 +53,6 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
         return  fragment;
     }
 
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("message", "This is my message to be reloaded");
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-
-        super.onCreate(savedInstanceState);
-        if( savedInstanceState != null ) {
-            Toast.makeText(getContext(), savedInstanceState.getString("message"), Toast.LENGTH_LONG).show();
-        }
-        //unpacking the bundle.
-        DataManager dm = DataManager.getInstance();
-        dm.setGetUserProfileListener(this);
-        dm.getUserProfile();
-
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -103,6 +81,20 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
         return layout;
     }
 
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        DataManager dm = DataManager.getInstance();
+        dm.setGetUserProfileListener(this);
+        dm.getUserProfile();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+    }
 
     private View.OnClickListener selectPicture()
     {

@@ -208,8 +208,6 @@ public class CircularImageView extends ImageView
 	@Override
 	public void setImageBitmap(Bitmap bm)
 	{
-		if (getDrawable() != null)
-			((BitmapDrawable)getDrawable()).getBitmap().recycle();
 		super.setImageBitmap(bm);
 		image = bm;
 		invalidate();
