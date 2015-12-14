@@ -137,7 +137,7 @@ public class Networking
         public String profilePic;
     }
 
-    public static final String SERVER_IP = "155.97.195.131";
+    public static final String SERVER_IP = "198.60.30.124";
 
     public static final int SERVER_PORT = 2000;
 
