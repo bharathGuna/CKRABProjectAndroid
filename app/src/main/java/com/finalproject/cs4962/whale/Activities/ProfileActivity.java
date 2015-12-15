@@ -186,7 +186,8 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
             }
             else
             {
-                Toast.makeText(getApplicationContext(),"Are you not friends with yourself?",Toast.LENGTH_SHORT);
+                Toast.makeText(getApplicationContext(),"Are you not friends with yourself?",Toast.LENGTH_SHORT).show();
+
             }
 
         }
