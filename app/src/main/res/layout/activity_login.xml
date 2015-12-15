@@ -39,7 +39,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
-                    android:inputType="textEmailAddress"
+                    android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="@color/textColorPrimary"/>
@@ -51,16 +51,14 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/password"
+                    android:id="@+id/ip"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
+                    android:hint="Enter IP (ex: 127.0.0.1)"
                     android:imeActionId="@+id/login"
                     android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-
-
-                    android:inputType="textPassword"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="@color/textColorPrimary"/>
@@ -73,8 +71,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
-                android:textStyle="bold"/>
+                android:text="Register"
+                android:textStyle="bold"
+                android:enabled="false"/>
 
         </LinearLayout>
     </ScrollView>

@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.finalproject.cs4962.whale.CircularImageView;
 import com.finalproject.cs4962.whale.DataManager;
@@ -171,13 +172,21 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
         if (view instanceof DrawButton)
         {
             DataManager manager = DataManager.getInstance();
-            if (view == findViewById(R.id.deleteFriend_activity))
+            String myId = manager.getUserID();
+            if(myId != userID)
             {
-                manager.removeFriend(userID);
+                if (view == findViewById(R.id.deleteFriend_activity))
+                {
+                    manager.removeFriend(userID);
+                }
+                else if (view == findViewById(R.id.addFriend_activity))
+                {
+                    manager.addFriend(userID);
+                }
             }
-            else if(view == findViewById(R.id.addFriend_activity))
+            else
             {
-                manager.addFriend(userID);
+                Toast.makeText(getApplicationContext(),"Are you not friends with yourself?",Toast.LENGTH_SHORT);
             }
 
         }
