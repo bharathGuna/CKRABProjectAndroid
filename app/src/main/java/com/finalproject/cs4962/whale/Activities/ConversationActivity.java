@@ -53,6 +53,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     private GridView gridView;
     private ViewFlipper flipper;
     private MediaRecorder audioRecorder;
+    private MediaPlayer duration = new MediaPlayer();
     private List<Message> messages = new ArrayList<>();
     private String convoID = "";
     private String[] ids = null;
@@ -66,6 +67,12 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
+        DataManager.getInstance().setOnUserFoundListener(this);
+
+        ids = getIntent().getExtras().getStringArray("ids");
+        for (String id : ids)
+            DataManager.getInstance().findUserByID(id);
+        DataManager.getInstance().findUserByID(DataManager.getInstance().getUserID());
 
         listView = (ListView) findViewById(R.id.messages_list);
         listView.setAdapter(this);
@@ -91,12 +98,6 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         TextView name = (TextView) findViewById(R.id.title_text);
         name.setText(title);
         name.setSingleLine();
-
-        DataManager.getInstance().setOnUserFoundListener(this);
-        ids = getIntent().getExtras().getStringArray("ids");
-        for (String id : ids)
-            DataManager.getInstance().findUserByID(id);
-        DataManager.getInstance().findUserByID(DataManager.getInstance().getUserID());
 
         ImageButton recordButton = (ImageButton) findViewById(R.id.record_button);
         recordButton.setOnTouchListener(this);
@@ -158,7 +159,6 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         {
             Toast.makeText(getApplicationContext(), "Sent successfully", Toast.LENGTH_SHORT).show();
             String id = DataManager.getInstance().getUserID();
-            String username = DataManager.getInstance().getUsername();
             Message msg = new Message("" + messages.size(), id);
             messages.add(msg);
             listView.invalidateViews();
@@ -436,23 +436,29 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         Message message = (Message) getItem(i);
         LinearLayout rootLayout = new LinearLayout(this);
         CircularImageView profile = new CircularImageView(this);
-        UserPair pair = pictures.get(message.senderID);
-        Bitmap bm = DataManager.getInstance().stringToBitmap(pair.pic);
-        profile.setName(pair.username);
-        profile.setImageBitmap(bm);
 
-        WaveView msg = new WaveView(this, false);
+        UserPair pair = pictures.get(message.senderID);
+        if (pair != null)
+        {
+            Bitmap bm = DataManager.getInstance().stringToBitmap(pair.pic);
+            profile.setName(pair.username);
+            profile.setImageBitmap(bm);
+        }
+        else
+        {
+            profile.setImageResource(R.drawable.whale);
+        }
+
+        WaveView msg = new WaveView(this, true);
+        msg.setLength(30);
         int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
         if (!message.senderID.equals(DataManager.getInstance().getUserID()))
         {
-            /* TODO: Get user image with their id at beginning and use that image here */
-
             rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
             rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
         }
         else
         {
-            /* TODO: Use self image */
             rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
             rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
         }

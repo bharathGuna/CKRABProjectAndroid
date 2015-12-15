@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.finalproject.cs4962.whale.DataManager;
 import com.finalproject.cs4962.whale.Fragments.ConversationFragment;
 import com.finalproject.cs4962.whale.Fragments.FriendFragment;
 import com.finalproject.cs4962.whale.Fragments.ProfileFragment;
@@ -37,6 +38,13 @@ public class MainActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        DataManager.getInstance().logout();
+        super.onDestroy();
     }
 
     private void setupViewPager(ViewPager viewPager) {

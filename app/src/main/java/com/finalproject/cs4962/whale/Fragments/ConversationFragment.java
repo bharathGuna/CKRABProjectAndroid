@@ -203,6 +203,9 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
 
         LinearLayout messageLayout = new LinearLayout(getActivity());
         WaveView msg = new WaveView(getActivity(), false);
+        msg.setPercentage(0.5f);
+        msg.setLength(30);
+
         rootLayout.addView(username, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 2));
         messageLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
         messageLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 12));

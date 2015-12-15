@@ -22,7 +22,7 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
     private RectF waveRect = new RectF();
     private ValueAnimator animator = new ValueAnimator();
     private int length = 5;
-    private float percentage = 0.5f;
+    private float percentage = 0.0f;
     private boolean touchable = true;
 
     public WaveView(Context context, boolean touchable)
@@ -35,6 +35,18 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
     {
         super(context, attributeSet);
         init(false);
+    }
+
+    public void setLength(int length)
+    {
+        this.length = length;
+        invalidate();
+    }
+
+    public void setPercentage(float percentage)
+    {
+        this.percentage = percentage;
+        invalidate();
     }
 
     private void init(boolean touchable)
@@ -55,35 +67,41 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
         if (!touchable)
             return false;
 
-        PointF touchPoint = new PointF(event.getX(), event.getY());
-        if (touchPoint.x > playRect.left && touchPoint.x < playRect.right &&
-                touchPoint.y > playRect.top && touchPoint.y < playRect.bottom)
+        if (!animator.isStarted())
         {
-            if (!animator.isStarted())
-            {
-                animator.setIntValues((int) (percentage * 100), 100);
-                animator.start();
-            }
-        }
-        else
-        {
-            float scaledX = touchPoint.x - playRect.width();
-            percentage = scaledX / (waveRect.width());
-            //animator.setCurrentFraction(percentage); // requires api 22
-            animator.setIntValues((int)(percentage * 100), 100);
-            invalidate();
+            animator.setIntValues(0, 100);
+            animator.start();
         }
 
-        if (animator.isRunning())
-        {
-            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
-            {
-                animator.cancel();
-            }
-        }
+//        PointF touchPoint = new PointF(event.getX(), event.getY());
+//        if (touchPoint.x > playRect.left && touchPoint.x < playRect.right &&
+//                touchPoint.y > playRect.top && touchPoint.y < playRect.bottom)
+//        {
+//            if (!animator.isStarted())
+//            {
+//                animator.setIntValues((int) (percentage * 100), 100);
+//                animator.start();
+//            }
+//        }
+//        else
+//        {
+//            float scaledX = touchPoint.x - playRect.width();
+//            percentage = scaledX / (waveRect.width());
+//            //animator.setCurrentFraction(percentage); // requires api 22
+//            animator.setIntValues((int)(percentage * 100), 100);
+//            invalidate();
+//        }
+//
+//        if (animator.isRunning())
+//        {
+//            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
+//            {
+//                animator.cancel();
+//            }
+//        }
 
 
-        return true;
+        return false;
     }
 
     @Override
@@ -199,7 +217,8 @@ public class WaveView extends View implements ValueAnimator.AnimatorUpdateListen
         Path wavePath = new Path();
         Path playPath = new Path();
         int totalPlayPathPoints = (int) (percentage * 100);
-        float periods = 6;
+        float per = (float) length / 30.0f;
+        float periods = per * 6;
         float deltaX = (waveRect.width()) / 100;
         float scaleY = waveRect.height() / 2 - pad;
         PointF start = new PointF(waveRect.left, waveRect.centerY());

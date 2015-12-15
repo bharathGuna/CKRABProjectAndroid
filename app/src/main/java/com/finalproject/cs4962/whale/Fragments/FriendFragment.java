@@ -47,6 +47,7 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
     {
         super.onCreate(savedInstanceState);
         DataManager manager = DataManager.getInstance();
+        manager.getFriendsList(manager.getUserID());
         manager.setGetFriendsListener(this);
         friends = new ArrayList<>();
     }
