@@ -36,6 +36,7 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
 {
     //private  GridView gridView;
     private List<Friend> friends;
+    private int numOnline = 0;
     public static FriendFragment newInstance()
     {
         FriendFragment fragment = new FriendFragment();
@@ -216,14 +217,22 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         if (friends == null)
             return;
         this.friends = friends;
+        for (Friend f : friends)
+        {
+            if (f.online)
+                numOnline++;
+        }
         GridView gridView = (GridView)getActivity().findViewById(R.id.friend_list_grid);
         gridView.invalidateViews();
+        TextView onlineView = (TextView)getActivity().findViewById(R.id.online_text_view);
+        onlineView.setText(numOnline + " of " + friends.size() + " online");
 
     }
 
     @Override
     public void onRefresh()
     {
+        numOnline = 0;
         DataManager.getInstance().getFriendsList(DataManager.getInstance().getUserID());
     }
 

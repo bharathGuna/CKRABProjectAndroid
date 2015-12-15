@@ -54,6 +54,7 @@
                 android:cropToPadding="true"
                 android:scaleType="fitCenter"
                 android:src="@drawable/magnifier"
+                android:visibility="gone"
                 android:textColor="@color/textColorPrimary"/>
 
 
