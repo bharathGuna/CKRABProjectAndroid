@@ -3,6 +3,7 @@ package com.finalproject.cs4962.whale.Activities;
 import android.app.Activity;
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -38,11 +39,13 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ConversationActivity extends Activity implements ListAdapter, View.OnTouchListener, AdapterView.OnItemClickListener, DataManager.OnMessageSentListener, DataManager.GetNewMessagesListener
+public class ConversationActivity extends Activity implements ListAdapter, View.OnTouchListener, AdapterView.OnItemClickListener, DataManager.OnMessageSentListener, DataManager.GetNewMessagesListener, DataManager.OnUserFoundListener
 {
     private String FILE_PATH;
     private String BOARD_PATH;
@@ -52,7 +55,10 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     private MediaRecorder audioRecorder;
     private List<Message> messages = new ArrayList<>();
     private String convoID = "";
+    private String[] ids = null;
     private String[] names = null;
+    /* <K, V> => <ID, Pic> */
+    private Map<String, UserPair> pictures = new HashMap<String, UserPair>();
     private AsyncTask<Void, Void, Void> recordingTimer;
 
     @Override
@@ -86,7 +92,13 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         name.setText(title);
         name.setSingleLine();
 
-        ImageButton recordButton = (ImageButton)findViewById(R.id.record_button);
+        DataManager.getInstance().setOnUserFoundListener(this);
+        ids = getIntent().getExtras().getStringArray("ids");
+        for (String id : ids)
+            DataManager.getInstance().findUserByID(id);
+        DataManager.getInstance().findUserByID(DataManager.getInstance().getUserID());
+
+        ImageButton recordButton = (ImageButton) findViewById(R.id.record_button);
         recordButton.setOnTouchListener(this);
 
         DataManager.getInstance().setOnMessageSentListener(this);
@@ -101,8 +113,8 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
             dir.mkdir();
 
         messages = DataManager.getInstance().loadPreviousMessagesInConvo(FILE_PATH);
-                                DataManager.getInstance().getNewMessagesInConvo(convoID);
-//        pollForNewMessages();
+        DataManager.getInstance().getNewMessagesInConvo(convoID);
+        //        pollForNewMessages();
     }
 
     @Override
@@ -119,24 +131,24 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
 
     private void pollForNewMessages()
     {
-//        Timer timer = new Timer();
-//        TimerTask task = new TimerTask()
-//        {
-//            @Override
-//            public void run()
-//            {
-//                AsyncTask<Void, Void, Void> pollTask = new AsyncTask<Void, Void, Void>()
-//                {
-//                    @Override
-//                    protected Void doInBackground(Void... voids)
-//                    {
-//                        DataManager.getInstance().getNewMessagesInConvo(convoID);
-//                        return null;
-//                    }
-//                }.execute();
-//            }
-//        };
-//        timer.schedule(task, 0, 2000);
+        //        Timer timer = new Timer();
+        //        TimerTask task = new TimerTask()
+        //        {
+        //            @Override
+        //            public void run()
+        //            {
+        //                AsyncTask<Void, Void, Void> pollTask = new AsyncTask<Void, Void, Void>()
+        //                {
+        //                    @Override
+        //                    protected Void doInBackground(Void... voids)
+        //                    {
+        //                        DataManager.getInstance().getNewMessagesInConvo(convoID);
+        //                        return null;
+        //                    }
+        //                }.execute();
+        //            }
+        //        };
+        //        timer.schedule(task, 0, 2000);
     }
 
     @Override
@@ -146,6 +158,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         {
             Toast.makeText(getApplicationContext(), "Sent successfully", Toast.LENGTH_SHORT).show();
             String id = DataManager.getInstance().getUserID();
+            String username = DataManager.getInstance().getUsername();
             Message msg = new Message("" + messages.size(), id);
             messages.add(msg);
             listView.invalidateViews();
@@ -172,6 +185,14 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         }
         listView.invalidateViews();
     }
+
+    @Override
+    public void onUserFound(Networking.FindUserResponse response)
+    {
+        UserPair pair = new UserPair(response.profilePic, response.username);
+        pictures.put(response.userID, pair);
+    }
+
 
     private void writeBytesToFile(byte[] clip, String senderID)
     {
@@ -213,7 +234,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     public void sendBiteClicked(View view)
     {
         // Send, for now updates
-        GridViewAdapter adapter = (GridViewAdapter)gridView.getAdapter();
+        GridViewAdapter adapter = (GridViewAdapter) gridView.getAdapter();
         if (adapter.messagePath.equals(""))
             return;
 
@@ -249,7 +270,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
             e.printStackTrace();
         }
         adapter.messagePath = "";
-//        DataManager.getInstance().getNewMessagesInConvo(convoID);
+        //        DataManager.getInstance().getNewMessagesInConvo(convoID);
 
     }
 
@@ -337,8 +358,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
                         audioRecorder = null;
                     }
                 }
-                else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
-                        motionEvent.getAction() == MotionEvent.ACTION_CANCEL)
+                else if (motionEvent.getAction() == MotionEvent.ACTION_UP || motionEvent.getAction() == MotionEvent.ACTION_CANCEL)
                 {
 
                     if (audioRecorder != null)
@@ -416,12 +436,17 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         Message message = (Message) getItem(i);
         LinearLayout rootLayout = new LinearLayout(this);
         CircularImageView profile = new CircularImageView(this);
-        profile.setImageResource(R.drawable.whale);
+        UserPair pair = pictures.get(message.senderID);
+        Bitmap bm = DataManager.getInstance().stringToBitmap(pair.pic);
+        profile.setName(pair.username);
+        profile.setImageBitmap(bm);
+
         WaveView msg = new WaveView(this, false);
         int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
         if (!message.senderID.equals(DataManager.getInstance().getUserID()))
         {
             /* TODO: Get user image with their id at beginning and use that image here */
+
             rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
             rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
         }
@@ -463,7 +488,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
     {
         Message msg = (Message) getItem(i);
-        String path = FILE_PATH + "/" + msg.senderID +msg.messageID;
+        String path = FILE_PATH + "/" + msg.senderID + msg.messageID;
         MediaPlayer player = new MediaPlayer();
         try
         {
@@ -486,11 +511,24 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
         }
     }
 
+    private class UserPair
+    {
+        public String pic;
+        public String username;
+
+        public UserPair(String pic, String username)
+        {
+            this.pic = pic;
+            this.username = username;
+        }
+    }
+
     private class GridViewAdapter implements ListAdapter, AdapterView.OnItemClickListener
     {
         private Context context;
         public String messagePath = "";
         private int previousSelected = -1;
+
         public GridViewAdapter(Context context)
         {
             this.context = context;
@@ -616,7 +654,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
                     sbv.select();
                 }
 
-                Networking.Soundbite bite = (Networking.Soundbite)getItem(i);
+                Networking.Soundbite bite = (Networking.Soundbite) getItem(i);
                 messagePath = bite.uploaderID + bite.soundbiteName;
                 previousSelected = i;
             }

@@ -121,6 +121,7 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
         toConversationIntent.setClass(getActivity(), ConversationActivity.class);
         toConversationIntent.putExtra("convoID", convoID);
         toConversationIntent.putExtra("names", names);
+        toConversationIntent.putExtra("ids", ids);
         startActivity(toConversationIntent);
     }
 
@@ -246,13 +247,18 @@ public class ConversationFragment extends Fragment implements ListAdapter, Adapt
         toConversationIntent.putExtra("convoID", convo.convoID);
         List<Conversation.User> users = convo.users;
         List<String> _names = new ArrayList<>();
+        List<String> _ids = new ArrayList<>();
         for (Conversation.User user : users)
         {
             _names.add(user.name);
+            _ids.add(user.id);
         }
         String[] names = new String[_names.size()];
         _names.toArray(names);
         toConversationIntent.putExtra("names", names);
+        String[] ids = new String[_ids.size()];
+        _ids.toArray(ids);
+        toConversationIntent.putExtra("ids", ids);
         startActivity(toConversationIntent);
     }
 

@@ -1,6 +1,5 @@
 package com.finalproject.cs4962.whale;
 
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -104,11 +103,6 @@ public class DataManager
         void onUserFound(Networking.FindUserResponse response);
     }
 
-    public interface OnGotImageListener
-    {
-        void onGotImage(Networking.ImageResponse response);
-    }
-
     private String userID;
     private String username;
 
@@ -133,7 +127,6 @@ public class DataManager
     private OnSoundbiteUploadedListener onSoundbiteUploadedListener;
     private OnUpdateReceivedListener onUpdateReceivedListener;
     private OnUserFoundListener onUserFoundListener;
-    private OnGotImageListener onGotImageListener;
 
     private DataManager()
     {
@@ -275,11 +268,6 @@ public class DataManager
     public void setOnUserFoundListener(OnUserFoundListener onUserFoundListener)
     {
         this.onUserFoundListener = onUserFoundListener;
-    }
-
-    public void setOnGotImageListener(OnGotImageListener onGotImageListener)
-    {
-        this.onGotImageListener = onGotImageListener;
     }
 
     public List<Message> loadPreviousMessagesInConvo(String path)
@@ -740,7 +728,7 @@ public class DataManager
             @Override
             protected Networking.GenericResponse doInBackground(String... strings)
             {
-                return Networking.sendMessageToConversation(strings[0], strings[1], strings[2]);
+                return Networking.sendMessageToConversation(strings[0], strings[1], strings[2], strings[3]);
             }
 
             @Override
@@ -758,7 +746,7 @@ public class DataManager
             }
         };
 
-        sendTask.execute(userID, convoID, msg);
+        sendTask.execute(username, userID, convoID, msg);
     }
 
     public void updateUserProfile(String pic, String desc)
@@ -845,7 +833,7 @@ public class DataManager
             @Override
             protected Networking.FindUserResponse doInBackground(String... strings)
             {
-                return Networking.findUser(strings[0]);
+                return Networking.findUserByName(strings[0]);
             }
 
             @Override
@@ -863,29 +851,28 @@ public class DataManager
         findTask.execute(username);
     }
 
-    public void getUserImage(String userID)
+    public void findUserByID(String userID)
     {
-        AsyncTask<String, Integer, Networking.ImageResponse> imageTask = new AsyncTask<String, Integer, Networking.ImageResponse>()
+        AsyncTask<String, Integer, Networking.FindUserResponse> findTask = new AsyncTask<String, Integer, Networking.FindUserResponse>()
         {
             @Override
-            protected Networking.ImageResponse doInBackground(String... strings)
+            protected Networking.FindUserResponse doInBackground(String... strings)
             {
-                return Networking.getImage(strings[0]);
+                return Networking.findUserByID(strings[0]);
             }
 
             @Override
-            protected void onPostExecute(Networking.ImageResponse imageResponse)
+            protected void onPostExecute(Networking.FindUserResponse findUserResponse)
             {
-                super.onPostExecute(imageResponse);
-
-                if (imageResponse == null)
+                super.onPostExecute(findUserResponse);
+                if (findUserResponse == null)
                     return;
 
-                if (onGotImageListener != null)
-                    onGotImageListener.onGotImage(imageResponse);
+                if (onUserFoundListener != null)
+                    onUserFoundListener.onUserFound(findUserResponse);
             }
         };
-        imageTask.execute(userID);
+        findTask.execute(userID);
     }
 
     /**

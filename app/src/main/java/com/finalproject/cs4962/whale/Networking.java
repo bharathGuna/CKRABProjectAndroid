@@ -83,6 +83,7 @@ public class Networking
 
     public class Message
     {
+        public String username;
         public String senderID;
         public String dateTime;
         public String message;
@@ -132,12 +133,7 @@ public class Networking
         public String profilePic;
     }
 
-    public class ImageResponse
-    {
-        public String profilePic;
-    }
-
-    public static final String SERVER_IP = "155.99.162.27";
+    public static final String SERVER_IP = "155.99.161.77";
 
     public static final int SERVER_PORT = 2000;
 
@@ -681,7 +677,7 @@ public class Networking
         }
     }
 
-    public static GenericResponse sendMessageToConversation(String userID, String convoID, String msg)
+    public static GenericResponse sendMessageToConversation(String username, String userID, String convoID, String msg)
     {
         try
         {
@@ -851,7 +847,7 @@ public class Networking
         }
     }
 
-    public static FindUserResponse findUser(String username)
+    public static FindUserResponse findUserByName(String username)
     {
         try
         {
@@ -893,7 +889,7 @@ public class Networking
         }
     }
 
-    public static ImageResponse getImage(String userID)
+    public static FindUserResponse findUserByID(String userID)
     {
         try
         {
@@ -903,7 +899,7 @@ public class Networking
             DataOutputStream out = new DataOutputStream(connection.getOutputStream());
 
             /* Build the message */
-            String type = "getimag";
+            String type = "getuser";
             String message = String.format("{ \"userID\" : \"%s\" }", userID);
             byte[] payload = packMessage(type, message);
 
@@ -925,12 +921,12 @@ public class Networking
             String json = byteArrayToString(response);
             Gson gson = new Gson();
 
-            ImageResponse imageResponse = gson.fromJson(json, ImageResponse.class);
-            return imageResponse;
+            FindUserResponse findUserResponse = gson.fromJson(json, FindUserResponse.class);
+            return findUserResponse;
         }
         catch (Exception e)
         {
-            Log.i("Networking", "Error trying to get user image: " + e);
+            Log.i("Networking", "Error trying to find user: " + e);
             return null;
         }
     }
