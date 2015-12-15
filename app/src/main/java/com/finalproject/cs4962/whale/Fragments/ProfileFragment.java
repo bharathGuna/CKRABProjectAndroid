@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.finalproject.cs4962.whale.Activities.AboutMeActivity;
 import com.finalproject.cs4962.whale.CircularImageView;
@@ -32,6 +33,8 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
 {
     private static final int SELECT_SINGLE_PICTURE = 101;
     public static final String IMAGE_TYPE = "image/*";
+    private static int RESULT_LOAD_IMG = 1;
+
 
     public static ProfileFragment newInstance()
     {
@@ -79,10 +82,10 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
             @Override
             public void onClick(View view)
             {
-                Intent intent = new Intent();
-                intent.setType(IMAGE_TYPE);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Image"), SELECT_SINGLE_PICTURE);
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                // Start the Intent
+                startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
             }
         };
 
@@ -104,32 +107,46 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
                 DataManager.getInstance().updateUserProfile("", updated);
 
             }
-            else if (resultCode == Activity.RESULT_CANCELED)
-            {
-
-            }
         }
-
-        else if (requestCode == SELECT_SINGLE_PICTURE)
+        else if (requestCode == RESULT_LOAD_IMG)
         {
-            if (resultCode == -1)
+            try
             {
-                Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String picturePath = cursor.getString(columnIndex);
-                cursor.close();
-                Bitmap pic = BitmapFactory.decodeFile(picturePath);
-                CircularImageView profilePic = (CircularImageView) getActivity().findViewById(R.id.profile_picture);
-                profilePic.setImageBitmap(pic);
-                String img = DataManager.getInstance().bitmapToString(pic);
-                DataManager.getInstance().updateUserProfile(img, "");
+                // When an Image is picked
+                if (resultCode == Activity.RESULT_OK && null != data)
+                {
+                    // Get the Image from data
+                    String imgDecodableString;
+                    Uri selectedImage = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                    // Get the cursor
+                    Cursor cursor = getActivity().getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+                    // Move to first row
+                    cursor.moveToFirst();
+
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    imgDecodableString = cursor.getString(columnIndex);
+                    cursor.close();
+                    Bitmap pic = BitmapFactory.decodeFile(imgDecodableString);
+                    CircularImageView profilePic = (CircularImageView) getActivity().findViewById(R.id.profile_picture);
+                    profilePic.setImageBitmap(pic);
+                    String img = DataManager.getInstance().bitmapToString(pic);
+                    DataManager.getInstance().updateUserProfile(img, "");
+
+                }
+                else
+                {
+                    Toast.makeText(getContext(), "You haven't picked Image", Toast.LENGTH_LONG).show();
+                }
+            } catch (Exception e)
+            {
+                Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
         }
-
     }
+
+
 
     @Override
     public void onGetProfile(Networking.PersonalProfileResponse profile)
