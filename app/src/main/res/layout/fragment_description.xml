@@ -10,7 +10,8 @@
         android:layout_height="match_parent"
         android:gravity="top"
         android:textColor="@color/textColorPrimary"
-        android:textSize="30sp"/>
+        android:textSize="30sp"
+        android:textColorHint="@color/textColorPrimary"/>
 
 />
 

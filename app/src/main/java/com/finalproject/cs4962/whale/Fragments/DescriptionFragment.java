@@ -20,14 +20,17 @@ import com.finalproject.cs4962.whale.R;
 /**
  * Created by Khong on 12/5/15.
  */
-public class DescriptionFragment extends Fragment implements View.OnClickListener, DataManager.OnProfileUpdatedListener
+public class DescriptionFragment extends Fragment
 {
-    private final String ABOUTME = "ABOUTME";
-    private static final String MODE = "MODE";
-    private String current = "";
-    public static DescriptionFragment newInstance()
+    private final static String ABOUTME = "ABOUTME";
+
+    public static DescriptionFragment newInstance(String about)
     {
-        return new DescriptionFragment();
+        DescriptionFragment fragment = new DescriptionFragment();
+        Bundle args = new Bundle();
+        args.putString(ABOUTME,about);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -42,8 +45,6 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
     {
         RelativeLayout layout = (RelativeLayout)inflater.inflate(R.layout.fragment_description, container, false);
 
-        TextView text = (TextView)layout.findViewById(R.id.aboutme);
-
         return layout;
     }
 
@@ -51,44 +52,18 @@ public class DescriptionFragment extends Fragment implements View.OnClickListene
     public void onStart()
     {
         super.onStart();
-        DataManager.getInstance().setOnProfileUpdatedListener(this);
-    }
-
-    @Override
-    public void onClick(View view)
-    {
-        Intent intent = new Intent();
-        intent.setClass(getActivity(), AboutMeActivity.class);
-        TextView text = (TextView) view;
-        intent.putExtra(AboutMeActivity.CURRENTTEXT, text.getText().toString());
-        startActivityForResult(intent,3);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 3)
+        if(getArguments() != null && getArguments().containsKey(ABOUTME))
         {
-            if(resultCode == Activity.RESULT_OK)
-            {
-                String updatedText = (String)data.getExtras().get(AboutMeActivity.NEWTEXT);
-                TextView text = (TextView)getActivity().findViewById(R.id.aboutme);
-                text.setText(updatedText);
-                DataManager.getInstance().updateUserProfile("",updatedText);
-            }
-            else if(resultCode == Activity.RESULT_CANCELED)
-            {
-                String updatedText = (String)data.getExtras().get(AboutMeActivity.CURRENTTEXT);
-                TextView text = (TextView)getActivity().findViewById(R.id.aboutme);
-                text.setText(updatedText);
-            }
+            setAboutText((String)getArguments().get(ABOUTME));
         }
     }
 
-    @Override
-    public void onProfileUpdated(Networking.GenericResponse response)
+    private void setAboutText(String _text)
     {
-        String s = response.description + " " + response.success;
+        TextView text = (TextView)getActivity().findViewById(R.id.aboutme);
+        text.setText(_text);
     }
+
+
+
 }

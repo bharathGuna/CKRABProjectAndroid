@@ -97,6 +97,8 @@
         android:layout_weight="6"
         android:textColor="@color/textColorPrimary"
         android:textSize="25sp"
+        android:hint="Tell Me About Yourself"
+        android:textColorHint="@color/textColorPrimary"
         android:paddingLeft="8dp"/>
 
 </LinearLayout>

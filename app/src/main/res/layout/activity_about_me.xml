@@ -9,15 +9,17 @@
         android:id="@+id/editme"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="6"
         android:gravity="top"
         android:textColor="@color/textColorPrimary"
-        android:textSize="30sp"/>
+        android:textSize="30sp"
+        android:hint="Tell Me About Yourself"
+        android:textColorHint="@color/textColorPrimary"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="1">
 
 
 

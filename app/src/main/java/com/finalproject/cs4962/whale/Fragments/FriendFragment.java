@@ -169,7 +169,7 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         indicatorView.setLayoutParams(params);
         stateLayout.addView(indicatorView);
-        indicatorView.setState(true);
+        indicatorView.setState(friend.online);
         imageView = new CircularImageView(getContext());
         imageView.setImageBitmap(friend.profilePic);
         imageView.setName(friend.name);

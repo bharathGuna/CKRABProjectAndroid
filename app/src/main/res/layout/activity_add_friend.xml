@@ -15,9 +15,11 @@
             android:layout_height="match_parent"
             android:layout_weight="8"
             android:textColor="@color/textColorPrimary"
-            android:hint="Username"
+            android:hint="Enter Username"
             android:textColorHint="@color/colorAccent"
-            android:id="@+id/search_text"/>
+            android:id="@+id/search_text"
+            android:singleLine="true"
+            android:imeOptions="actionSearch"/>
 
         <Button
             android:layout_width="0dp"

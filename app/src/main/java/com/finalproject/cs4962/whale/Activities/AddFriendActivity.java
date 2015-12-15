@@ -1,13 +1,17 @@
 package com.finalproject.cs4962.whale.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -49,7 +53,21 @@ public class AddFriendActivity extends AppCompatActivity implements ListAdapter,
 
         DataManager.getInstance().setOnUserFoundListener(this);
 
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH)
+                {
+                    searchPressed(null);
+                }
+                return false;
+            }
+        });
+
     }
+
 
     @Override
     protected void onStart()
@@ -59,6 +77,12 @@ public class AddFriendActivity extends AppCompatActivity implements ListAdapter,
 
     public void searchPressed(View view)
     {
+        InputMethodManager inputManager = (InputMethodManager)
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),
+                InputMethodManager.HIDE_NOT_ALWAYS);
+
         String name = editText.getText().toString();
         if (name == "")
             return;

@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,7 +12,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.finalproject.cs4962.whale.CircularImageView;
@@ -31,7 +29,6 @@ import java.util.List;
 
 public class ProfileActivity extends AppCompatActivity implements DataManager.GetOtherProfileListener, View.OnClickListener, DataManager.OnFriendshipChangeListener
 {
-
     public static String USERID = "USERID";
     private CircularImageView profilePic;
     private TextView name;
@@ -62,8 +59,7 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
 
         delete = (DrawButton) findViewById(R.id.deleteFriend_activity);
         add = (DrawButton) findViewById(R.id.addFriend_activity);
-        //add.setDrawSymbol(drawAddSymbol());
-        //delete.setDrawSymbol(drawDeleteSymbol());
+
 
         tabLayout = (TabLayout) findViewById(R.id.profileTabs_activity);
         viewPager = (ViewPager) findViewById(R.id.profileViewpager_activity);
@@ -137,9 +133,10 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
         profilePic.setImageBitmap(profile.profilePic);
         profilePic.setName(profile.name);
         name.setText(profile.name);
-        totalMessage.append( "Total Message: " + profile.messages);
-        friendDate.append("Friended " + profile.friended);
+        totalMessage.append("Total Message: " + profile.messages);
+        friendDate.append("Friended: " + profile.friended);
         friends = (ArrayList)profile.friends;
+
         if(profile.friended.isEmpty())
         {
             delete.setVisibility(View.GONE);
@@ -155,15 +152,15 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
             delete.setOnClickListener(this);
         }
 
-        setupViewPager(viewPager);
+        setupViewPager(viewPager, profile.about);
         tabLayout.setupWithViewPager(viewPager);
     }
 
 
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager, String about) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(DescriptionFragment.newInstance(), "About Me");
+        adapter.addFragment(DescriptionFragment.newInstance(about), "About Me");
         adapter.addFragment(ProfileFriendFragment.newInstance(friends), "Friends");
         viewPager.setAdapter(adapter);
     }
