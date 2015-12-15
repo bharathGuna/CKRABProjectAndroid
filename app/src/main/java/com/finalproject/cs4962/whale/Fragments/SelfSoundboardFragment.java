@@ -383,6 +383,7 @@ public class SelfSoundboardFragment extends Fragment implements ListAdapter, Ada
                         {
                             e.printStackTrace();
                             Toast.makeText(getActivity().getApplicationContext(), "Hold to record, not tap", Toast.LENGTH_SHORT).show();
+                            deleteBite(tempName);
 
                         }
                         finally

@@ -48,7 +48,6 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         super.onCreate(savedInstanceState);
         DataManager manager = DataManager.getInstance();
         manager.setGetFriendsListener(this);
-        manager.getFriendsList(manager.getUserID());
         friends = new ArrayList<>();
     }
 
@@ -77,6 +76,12 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         search.setOnClickListener(this);
         FloatingActionButton button = (FloatingActionButton)getActivity().findViewById(R.id.findFriend);
         button.setOnClickListener(this);
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
     }
 
     private AdapterView.OnItemClickListener getOnItemClickListener()
@@ -205,11 +210,14 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
     @Override
     public void onGetFriends(List<Friend> friends)
     {
+        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.friend_list_refresh);
+        refreshLayout.setRefreshing(false);
+        if (friends == null)
+            return;
         this.friends = friends;
         GridView gridView = (GridView)getActivity().findViewById(R.id.friend_list_grid);
         gridView.invalidateViews();
-        SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout)getActivity().findViewById(R.id.friend_list_refresh);
-        refreshLayout.setRefreshing(false);
+
     }
 
     @Override

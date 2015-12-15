@@ -4,15 +4,34 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/soundboard_tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/soundboard_viewpager"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="5"/>
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="@color/navigationBarColor"
+        android:gravity="left"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:text="Soundboards"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="20sp"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/soundboard_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/soundboard_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"/>
+    </LinearLayout>
 </LinearLayout>

@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Your Profile"
+        android:layout_gravity="center"
+        android:gravity="left"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:textSize="20sp"
+        android:background="@color/navigationBarColor"
+        android:textColor="@color/textColorPrimary"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -82,7 +94,7 @@
         android:id="@+id/about_me_textbox"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="6"
         android:textColor="@color/textColorPrimary"
         android:textSize="25sp"
         android:paddingLeft="8dp"/>

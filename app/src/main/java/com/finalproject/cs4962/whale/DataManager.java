@@ -865,8 +865,8 @@ public class DataManager
             protected void onPostExecute(Networking.FindUserResponse findUserResponse)
             {
                 super.onPostExecute(findUserResponse);
-                if (findUserResponse == null)
-                    return;
+//                if (findUserResponse == null)
+//                    return;
 
                 if (onUserFoundListener != null)
                     onUserFoundListener.onUserFound(findUserResponse);
