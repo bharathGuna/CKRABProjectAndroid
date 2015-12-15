@@ -49,7 +49,6 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         super.onCreate(savedInstanceState);
         DataManager manager = DataManager.getInstance();
         manager.getFriendsList(manager.getUserID());
-        manager.setGetFriendsListener(this);
         friends = new ArrayList<>();
     }
 
@@ -78,6 +77,8 @@ public class FriendFragment extends Fragment implements ListAdapter, DataManager
         search.setOnClickListener(this);
         FloatingActionButton button = (FloatingActionButton)getActivity().findViewById(R.id.findFriend);
         button.setOnClickListener(this);
+        DataManager.getInstance().setGetFriendsListener(this);
+
     }
 
     @Override
