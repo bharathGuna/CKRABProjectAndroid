@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,7 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     private String convoID = "";
     private String[] ids = null;
     private String[] names = null;
+    private Timer timer;
     /* <K, V> => <ID, Pic> */
     private Map<String, UserPair> pictures = new HashMap<String, UserPair>();
     private AsyncTask<Void, Void, Void> recordingTimer;
@@ -115,13 +117,15 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
 
         messages = DataManager.getInstance().loadPreviousMessagesInConvo(FILE_PATH);
         DataManager.getInstance().getNewMessagesInConvo(convoID);
-        //        pollForNewMessages();
+        pollForNewMessages();
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
+        if (timer != null)
+            timer.cancel();
     }
 
     @Override
@@ -132,24 +136,24 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
 
     private void pollForNewMessages()
     {
-        //        Timer timer = new Timer();
-        //        TimerTask task = new TimerTask()
-        //        {
-        //            @Override
-        //            public void run()
-        //            {
-        //                AsyncTask<Void, Void, Void> pollTask = new AsyncTask<Void, Void, Void>()
-        //                {
-        //                    @Override
-        //                    protected Void doInBackground(Void... voids)
-        //                    {
-        //                        DataManager.getInstance().getNewMessagesInConvo(convoID);
-        //                        return null;
-        //                    }
-        //                }.execute();
-        //            }
-        //        };
-        //        timer.schedule(task, 0, 2000);
+        timer = new Timer();
+        TimerTask task = new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                AsyncTask<Void, Void, Void> pollTask = new AsyncTask<Void, Void, Void>()
+                {
+                    @Override
+                    protected Void doInBackground(Void... voids)
+                    {
+                        DataManager.getInstance().getNewMessagesInConvo(convoID);
+                        return null;
+                    }
+                }.execute();
+            }
+        };
+                timer.schedule(task, 0, 2000);
     }
 
     @Override
@@ -435,32 +439,48 @@ public class ConversationActivity extends Activity implements ListAdapter, View.
     {
         Message message = (Message) getItem(i);
         LinearLayout rootLayout = new LinearLayout(this);
+        rootLayout.setOrientation(LinearLayout.VERTICAL);
+
         CircularImageView profile = new CircularImageView(this);
 
+        TextView username = new TextView(this);
         UserPair pair = pictures.get(message.senderID);
         if (pair != null)
         {
             Bitmap bm = DataManager.getInstance().stringToBitmap(pair.pic);
             profile.setName(pair.username);
             profile.setImageBitmap(bm);
+            username.setText(pair.username);
         }
         else
         {
             profile.setImageResource(R.drawable.whale);
         }
 
+        username.setGravity(Gravity.CENTER_VERTICAL);
+        username.setSingleLine();
+
+        LinearLayout messageLayout = new LinearLayout(this);
+
+
         WaveView msg = new WaveView(this, true);
         msg.setLength(30);
         int padding = (int) (8.0f * getResources().getDisplayMetrics().density);
+        username.setPadding(padding, 0, 0, padding);
+        username.setTextColor(getResources().getColor(R.color.textColorPrimary));
+        username.setTextSize(getResources().getDisplayMetrics().scaledDensity * 5);
         if (!message.senderID.equals(DataManager.getInstance().getUserID()))
         {
-            rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
-            rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
+            rootLayout.addView(username, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 2));
+            messageLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
+            messageLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 12));
+            rootLayout.addView(messageLayout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 3));
         }
         else
         {
-            rootLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 12));
-            rootLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
+            messageLayout.addView(msg, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 12));
+            messageLayout.addView(profile, new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
+            rootLayout.addView(messageLayout, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 3));
         }
         rootLayout.setPadding(padding, padding, padding, padding);
         return rootLayout;
