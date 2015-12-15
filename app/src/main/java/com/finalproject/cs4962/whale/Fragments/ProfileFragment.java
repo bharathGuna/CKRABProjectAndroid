@@ -137,11 +137,11 @@ public class ProfileFragment extends Fragment implements DataManager.GetUserProf
                 }
                 else
                 {
-                    Toast.makeText(getContext(), "You haven't picked Image", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "You haven't picked Image", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e)
             {
-                Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         }
     }

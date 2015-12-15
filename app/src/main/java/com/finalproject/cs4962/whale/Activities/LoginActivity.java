@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         ipView = (EditText) findViewById(R.id.ip);
-
+        Button signInRegisterButton = (Button) findViewById(R.id.email_sign_in_button);
         preferences = getPreferences(0);
 
         if(preferences != null && preferences.contains(USERNAME) && preferences.contains(USERID))
@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 DataManager.getInstance().setUserID(userid);
                 DataManager.getInstance().setUsername(name);
                 username.setText(name);
+                signInRegisterButton.setText("Login");
             }
         }
 
@@ -117,8 +118,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener()
+
+        signInRegisterButton.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View view)

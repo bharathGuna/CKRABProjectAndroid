@@ -173,7 +173,7 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
         {
             DataManager manager = DataManager.getInstance();
             String myId = manager.getUserID();
-            if(myId != userID)
+            if(!myId.equals(userID))
             {
                 if (view == findViewById(R.id.deleteFriend_activity))
                 {
@@ -186,7 +186,7 @@ public class ProfileActivity extends AppCompatActivity implements DataManager.Ge
             }
             else
             {
-                Toast.makeText(getApplicationContext(),"Are you not friends with yourself?",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),"Are you not friends with yourself?",Toast.LENGTH_LONG).show();
 
             }
 
