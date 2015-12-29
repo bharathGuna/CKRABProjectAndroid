@@ -40,7 +40,7 @@ import java.util.regex.Pattern;
 
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via username/ip. You only have to login once now. 
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>,DataManager.OnAccountCreatedListener
 {
@@ -53,6 +53,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private SharedPreferences preferences;
     private final String USERID = "USERID";
     private final String USERNAME = "USERNAME";
+    //Debugging
+    private final String IP = "IP";
     private boolean login;
     private String userid;
     private String name;
@@ -71,22 +73,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         ipView = (EditText) findViewById(R.id.ip);
         Button signInRegisterButton = (Button) findViewById(R.id.email_sign_in_button);
-        preferences = getPreferences(0);
-
-        if(preferences != null && preferences.contains(USERNAME) && preferences.contains(USERID))
-        {
-            userid = preferences.getString(USERID, "");
-            name = preferences.getString(USERNAME,"");
-
-            if(!name.isEmpty())
-            {
-                DataManager.getInstance().setUserID(userid);
-                DataManager.getInstance().setUsername(name);
-                username.setText(name);
-                signInRegisterButton.setText("Login");
-            }
-        }
-
 
         ipView.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
@@ -98,19 +84,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     if (username.getText().length() > 0 && ipView.length() > 0)
                     {
                         String ip = ipView.getText().toString();
-                        Matcher matcher = IP_ADDRESS.matcher(ip);
-                        if (matcher.matches())
-                        {
-                            Networking.setServerIp(ip);
-                            Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-                            mEmailSignInButton.setEnabled(true);
-                            return true;
-                        }
-                        else
-                        {
-                            ipView.setError("IP is invalid");
-                        }
-
+                        authenticateIP(ip);
                     }
 
                 }
@@ -147,6 +121,50 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        preferences = getPreferences(0);
+
+        if(preferences != null && preferences.contains(USERNAME) && preferences.contains(USERID) && preferences.contains(IP))
+        {
+            userid = preferences.getString(USERID, "");
+            name = preferences.getString(USERNAME,"");
+            ip = preferences.getString(IP,"");
+
+            if(!name.isEmpty() )
+            {
+                DataManager.getInstance().setUserID(userid);
+                DataManager.getInstance().setUsername(name);
+                username.setText(name);
+                signInRegisterButton.setText("Login");
+                ipView.requestFocus();
+            }
+            if(!ip.isEmpty())
+            {
+                if(authenticateIP(ip))
+                {
+                    signInRegisterButton.performClick();
+                }
+                ipView.setText(ip);
+            }
+        }
+
+    }
+
+    private boolean authenticateIP(String ip)
+    {
+        Matcher matcher = IP_ADDRESS.matcher(ip);
+        if (matcher.matches())
+        {
+            Networking.setServerIp(ip);
+            Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+            mEmailSignInButton.setEnabled(true);
+            return true;
+        }
+        else
+        {
+            ipView.setError("IP is invalid");
+            return false;
+        }
     }
 
     @Override
@@ -158,6 +176,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (id.equals("FAILED"))
         {
             ipView.setError("Failed to connect to server.");
+            ipView.setText("");
             ipView.requestFocus();
         }
         else if (id.equals("TAKEN"))
@@ -173,6 +192,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(USERID,id);
             editor.putString(USERNAME,name);
+            editor.putString(IP,ipView.getText().toString());
             editor.commit();
             Intent toMainActivityIntent = new Intent();
             toMainActivityIntent.setClass(LoginActivity.this, MainActivity.class);

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Whale</string>
+    <string name="app_name">Convo</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
